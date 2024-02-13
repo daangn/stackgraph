@@ -1,0 +1,24 @@
+{
+	"exclude": ["render/assets", "_site"],
+	"tasks": {
+		"lume": "echo \"import 'lume/cli.ts'\" | deno run --unstable -A -",
+		"build": "deno task lume",
+		"serve": "deno task lume -s"
+	},
+	"fmt": {
+		"semiColons": false,
+		"useTabs": true,
+		"proseWrap": "never"
+	},
+	"compilerOptions": {
+		"allowJs": false,
+		"exactOptionalPropertyTypes": true,
+		"lib": ["deno.window", "dom"],
+		"jsx": "precompile",
+		"jsxImportSource": "npm:preact",
+		"types": ["./main.d.ts", "lume/types.ts"]
+	},
+	"imports": {
+		"lume/": "https://deno.land/x/lume@v2.0.3/"
+	}
+}

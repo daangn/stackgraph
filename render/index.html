@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    #help {
+      z-index: 100;
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.75);
+      padding: 0.5em;
+    }
+
+    .graph-tooltip {
+      min-width: 20em;
+      padding: 0.2em;
+    }
+
+    body {
+      margin: 0
+    }
+
+    h2,
+    h3,
+    ul {
+      margin: 0.2em 0;
+    }
+  </style>
+</head>
+
+<body>
+  <section id="help">
+    <table>
+      <tr>
+        <th>종류</th>
+        <th>설명</th>
+      </tr>
+      <tr>
+        <td>화살표</td>
+        <td>네비게이션 방향</td>
+      </tr>
+      <tr>
+        <td>실선 + 입자</td>
+        <td>stackflow push 네비게이션</td>
+      </tr>
+      <tr>
+        <td>점선</td>
+        <td>stackflow replace 네비게이션</td>
+      </tr>
+      <tr>
+      </tr>
+    </table>
+    rendered by <a href="https://github.com/daangn/stackgraph">StackGraph</a>
+  </section>
+
+  <div id="graph"></div>
+
+  <script type="module" src="./assets/main.js"></script>
+</body>
