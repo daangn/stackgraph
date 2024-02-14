@@ -6,32 +6,22 @@ import {
 import { getGraph } from "./graph.ts"
 import type { Graph } from "./graph.ts"
 
-export type Relations<A, B> = Record<string, Omit<LinkedVarDecl<A, B>, "decl">>
-export type LinkedVarDecl<A, B> = {
-	decl: VariableDeclaration
+export type Relations<A, B> = {
 	links: A
 	metas: B
 }
-
-export type Metadata = {
-	logShowEvents: string[]
-	logClickEvents: string[]
+export type LinkedVarDecl<A, B> = Relations<A, B> & {
+	node: VariableDeclaration
 }
 
 export type Dependencies = Record<string, string[]>
-
-export type Rels = Record<string, Rel>
-export type Rel = {
-	links: Record<"push" | "replace", string[]>
-	meta: Metadata
-}
 
 /**
  * creates a reference graph
  */
 export const serialize = (graph: Graph) =>
-	Array.from(graph.entries()).map(([decl, refs]) =>
-		[decl.getName(), distinct(refs.map((x) => x.getName()))] as const
+	Array.from(graph.entries()).map(([node, refs]) =>
+		[node.getName(), distinct(refs.map((x) => x.getName()))] as const
 	)
 
 type Option<A, B> = {
@@ -41,19 +31,19 @@ type Option<A, B> = {
 	getLink: (node: VariableDeclaration) => LinkedVarDecl<A, B> | undefined
 }
 
-export const generateGraph = <A, B>({ getLink }: Option<A, B>) =>
-(
-	files: SourceFile[],
-): { dependencies: Dependencies; relations: Relations<A, B> } => {
-	const links = files.flatMap((file) =>
-		file.getVariableDeclarations().flatMap((decl) => getLink(decl) ?? [])
-	)
+export const generateLinks =
+	<A, B>({ getLink }: Option<A, B>) =>
+	(files: SourceFile[]): LinkedVarDecl<A, B>[] =>
+		files.flatMap((file) =>
+			file.getVariableDeclarations().flatMap((node) => getLink(node) ?? [])
+		)
 
-	const relations = Object.fromEntries(
-		links.map(({ decl, ...relations }) => [decl.getName(), relations]),
+export const generateGraph = <A, B>(links: LinkedVarDecl<A, B>[]) => {
+	const relations: Record<string, Relations<A, B>> = Object.fromEntries(
+		links.map(({ node, ...relations }) => [node.getName(), relations]),
 	)
-	const dependencies = Object.fromEntries(
-		links.flatMap(({ decl }) => serialize(getGraph(decl))),
+	const dependencies: Dependencies = Object.fromEntries(
+		links.flatMap(({ node }) => serialize(getGraph(node))),
 	)
 
 	return { dependencies, relations }

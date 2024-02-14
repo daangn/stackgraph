@@ -13,13 +13,13 @@ export type Graph = Map<VariableDeclaration, VariableDeclaration[]>
 const getTopmostVarDecl = (
 	ref: ReferencedSymbolEntry,
 ): Optional<VariableDeclaration> => {
-	const decl = ref
+	const node = ref
 		.getNode()
 		.getAncestors()
 		.findLast((x) => x.getKindName() === "VariableDeclaration")
 		?.asKind(SyntaxKind.VariableDeclaration)
 
-	return toOptional(decl)
+	return toOptional(node)
 }
 
 export const getGraph = (vardecl: VariableDeclaration): Graph => {
