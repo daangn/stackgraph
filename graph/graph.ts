@@ -22,7 +22,7 @@ const getTopmostVarDecl = (
 	return toOptional(node)
 }
 
-export const getGraph = (vardecl: VariableDeclaration): Graph => {
+export const getGraph = (nodes: VariableDeclaration[]): Graph => {
 	const graph: Graph = new Map()
 
 	const getReferencedVarDecls = (
@@ -51,7 +51,7 @@ export const getGraph = (vardecl: VariableDeclaration): Graph => {
 		return varDecls
 	}
 
-	let decls = [vardecl]
+	let decls = nodes
 	while (decls.length > 0) {
 		decls = decls.flatMap(getReferencedVarDecls)
 	}

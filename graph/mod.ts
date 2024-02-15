@@ -43,7 +43,7 @@ export const generateGraph = <A, B>(links: LinkedVarDecl<A, B>[]) => {
 		links.map(({ node, ...relations }) => [node.getName(), relations]),
 	)
 	const dependencies: Dependencies = Object.fromEntries(
-		links.flatMap(({ node }) => serialize(getGraph(node))),
+		serialize(getGraph(links.map((x) => x.node))),
 	)
 
 	return { dependencies, relations }
