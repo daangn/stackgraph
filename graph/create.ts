@@ -1,4 +1,4 @@
-import { GraphElement } from "https://deno.land/x/rimbu@1.1.0/graph/custom/index.ts"
+import type { GraphElement } from "https://deno.land/x/rimbu@1.1.0/graph/custom/common/link.ts"
 import { ArrowGraphHashed } from "https://deno.land/x/rimbu@1.1.0/graph/mod.ts"
 import { Stream } from "https://deno.land/x/rimbu@1.1.0/stream/mod.ts"
 import { DepsMap } from "./deps_map.ts"

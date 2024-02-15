@@ -1,84 +1,61 @@
-import {
-	Project,
-	type SourceFile,
-} from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
-import {
-	asRelationRecord,
-	generateLinks,
-	type GetLink,
-	type LinkedVarDecl,
-} from "./links.ts"
-import { DepsMap, fromLinks } from "./deps_map.ts"
-import { FlatDepsMap, fromGraph } from "./flatten.ts"
+import { type SourceFile } from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
+import { asRelationRecord, generateLinks } from "./links.ts"
+import type { GetLink, LinkedVarDecl, Relations } from "./links.ts"
+import { fromLinks } from "./deps_map.ts"
+import { fromGraph } from "./flatten.ts"
 import { fromDepsMap, LinkDepsGraph } from "./create.ts"
 
 /**
  * StackGraph API wrapped into fluent interface.
  *
- * @module
- */
-
-export { builderProject as builder }
-
-const builderProject = (project: Project) => {
-	const files = project.getSourceFiles()
-	return {
-		files: (filter?: (file: SourceFile) => boolean) =>
-			builderFiles(filter ? files.filter(filter) : files),
-	}
-}
-
-const builderFiles = (files: SourceFile[]) => {
-	return {
-		files,
-		getLinks: <A, B>(getLink: GetLink<A, B>) =>
-			builderLinks<A, B>(generateLinks({ getLink })(files)),
-	}
-}
-
-const foo = builderProject(new Project())
-	.files(() => true)
-	.getLinks(() => undefined)
-
-const builderLinks = <A, B>(links: LinkedVarDecl<A, B>[]) => {
-	return {
-		toRelations: () => asRelationRecord(links),
-		toDepsMap: () => new BuilderDeps(fromLinks(links.map((x) => x.node))),
-	}
-}
-
-class BuilderDeps {
-	constructor(readonly deps: DepsMap) {}
-	toGraph() {
-		return new BuilderGraph(fromDepsMap(this.deps))
-	}
-}
-
-class BuilderGraph {
-	constructor(readonly graph: LinkDepsGraph) {}
-	toFlatDepsMap() {
-		return new BuilderFlatDepsMap(fromGraph(this.graph))
-	}
-}
-class BuilderFlatDepsMap {
-	constructor(readonly pages: FlatDepsMap) {}
-}
-
-/**
- * fluent interface helpers, or "Porcelain" API for StackGraph
+ * ```ts
+ * declare const fn: (node: VariableDeclaration) => LinkedVarDecl<string[], string> | undefined
  *
- * @module
+ * // filter variable declaration of interest and collect their metadata
+ * const metadata = new StackflowBuilder([])
+ * 	.getLinks(fn)
+ * 	.toRelations()
+ *
+ * // generate directed graph of references
+ * const components = new StackflowBuilder([])
+ * 	.getLinks(fn)
+ * 	.toGraph()
+ * 	.graph
+ *
+ * // flatten graph of references into top-level links
+ * const pages = new StackflowBuilder([])
+ * 	.getLinks(fn)
+ * 	.toGraph()
+ * 	.flatten()
+ * ```
  */
+export class StackflowBuilder {
+	constructor(readonly files: SourceFile[]) {}
+	getLinks<A, B>(getLink: GetLink<A, B>) {
+		return new LinksBuilder<A, B>(generateLinks({ getLink })(this.files))
+	}
+}
 
-const components = new BuilderFiles([])
-	.getLinks(() => undefined)
-	.toDepsMap()
-	.toGraph()
-	.graph
+export class LinksBuilder<A, B> {
+	constructor(readonly links: LinkedVarDecl<A, B>[]) {}
 
-const pages = new BuilderFiles([])
-	.getLinks(() => undefined)
-	.toDepsMap()
-	.toGraph()
-	.toFlatDepsMap()
-	.pages
+	/** collect link metadata into record */
+	toRelations(): Record<string, Relations<A, B>> {
+		return asRelationRecord(this.links)
+	}
+
+	/** recursively collect all descendants referencing links into map */
+	toGraph() {
+		return new GraphBuilder(
+			fromDepsMap(fromLinks(this.links.map((x) => x.node))),
+		)
+	}
+}
+
+export class GraphBuilder {
+	constructor(readonly graph: LinkDepsGraph) {}
+
+	flatten() {
+		return fromGraph(this.graph)
+	}
+}
