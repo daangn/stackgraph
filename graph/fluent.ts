@@ -1,6 +1,6 @@
 import { Project, SourceFile } from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
 import { asMetadataRecord, generateLinks } from "./links.ts"
-import type { GetLink, LinkedVarDecl, Metadata } from "./links.ts"
+import type { GetLink, LinkedDecl, Metadata } from "./links.ts"
 import { fromLinks } from "./deps_map.ts"
 import { FlatDepsMap, fromGraph } from "./flatten.ts"
 import { fromDepsMap, LinkDepsGraph } from "./create.ts"
@@ -58,11 +58,18 @@ export class StackGraph<A, B> {
 	private depsMapCache: DepsMap | undefined
 	private graphCache: LinkDepsGraph | undefined
 	private flatGraphCache: FlatDepsMap | undefined
-	private metadataCache: Record<string, Partial<Metadata<A, B>>> | undefined
+	private metadataCache: Record<string, Metadata<A, B>> | undefined
 
-	constructor(readonly links: LinkedVarDecl<A, B>[]) {}
+	constructor(readonly links: LinkedDecl<A, B>[]) {}
+
 	static searchAll(files: SourceFile[]) {
-		return new StackGraph(generateLinks((node) => ({ node }))(files))
+		return new StackGraph(
+			generateLinks((node) => ({
+				node,
+				links: undefined,
+				metas: undefined,
+			}))(files),
+		)
 	}
 
 	/** collect link metadata into record */
@@ -70,7 +77,7 @@ export class StackGraph<A, B> {
 		if (!this.metadataCache) {
 			this.metadataCache = asMetadataRecord(this.links)
 		}
-		return this.metadataCache
+		return this.metadataCache!
 	}
 
 	/** recursively collect all descendants referencing links into map */

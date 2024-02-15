@@ -1,4 +1,5 @@
 import {
+	ClassDeclaration,
 	ReferencedSymbol,
 	ReferencedSymbolEntry,
 	type SourceFile,
@@ -6,7 +7,9 @@ import {
 	VariableDeclaration,
 } from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
 
-export type DepsMap = Map<VariableDeclaration, VariableDeclaration[]>
+export type Declaration = VariableDeclaration | ClassDeclaration
+
+export type DepsMap = Map<Declaration, Declaration[]>
 /**
  * @privateRemarks
  *
@@ -14,13 +17,23 @@ export type DepsMap = Map<VariableDeclaration, VariableDeclaration[]>
  */
 const getTopmostVarDecl = (
 	ref: ReferencedSymbolEntry,
-): VariableDeclaration | undefined =>
-	ref
+): Declaration | undefined => {
+	const target = ref
 		.getNode()
 		.getAncestors()
-		.findLast((x) => x.getKindName() === "VariableDeclaration")
-		?.asKind(SyntaxKind.VariableDeclaration)
 
+	// 	.at(-2) // HACK: last is SourceFile, second to last is the variable/class declaration
+
+	// return (target?.isKind(SyntaxKind.VariableDeclaration) ||
+	// 		target?.isKind(SyntaxKind.ClassDeclaration))
+	// 	? target
+	// 	: undefined
+
+	return target.findLast((x): x is Declaration =>
+		x.isKind(SyntaxKind.VariableDeclaration) ||
+		x.isKind(SyntaxKind.ClassDeclaration)
+	)
+}
 // TODO: use isDefinition()?
 const getActualReferences =
 	(file: SourceFile) => (symbol: ReferencedSymbol): ReferencedSymbolEntry[] =>
@@ -31,9 +44,7 @@ const getActualReferences =
 				ref.getNode().getParent()?.getKindName() !== "ImportClause"
 			)
 
-const getReferencedVarDecls = (
-	node: VariableDeclaration,
-): VariableDeclaration[] => {
+const getReferencedVarDecls = (node: Declaration): Declaration[] => {
 	const file = node.getSourceFile()
 	const varDecls = node.findReferences()
 		.flatMap(getActualReferences(file))
@@ -42,17 +53,13 @@ const getReferencedVarDecls = (
 	return varDecls
 }
 
-/**
- * Generates map where
- * key: variable declaration
- * value: list of variable declarations that it references
- */
-export const fromLinks = (links: VariableDeclaration[]): DepsMap => {
+/** Recursively query variable references into key-value map */
+export const fromLinks = (links: Declaration[]): DepsMap => {
 	const graph: DepsMap = new Map()
 
-	let decls = links
-	while (decls.length > 0) {
-		decls = decls.flatMap((node) => {
+	let current = links
+	while (current.length > 0) {
+		current = current.flatMap((node) => {
 			const references = getReferencedVarDecls(node)
 			graph.set(node, references)
 			return references

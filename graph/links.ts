@@ -1,7 +1,5 @@
-import {
-	SourceFile,
-	VariableDeclaration,
-} from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
+import { SourceFile } from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
+import { Declaration } from "./deps_map.ts"
 
 export type Metadata<A, B> = {
 	/**
@@ -14,25 +12,23 @@ export type Metadata<A, B> = {
 	metas: B
 }
 
-export type LinkedVarDecl<A, B> = Partial<Metadata<A, B>> & {
-	node: VariableDeclaration
-}
+export type LinkedDecl<A, B> = Metadata<A, B> & { node: Declaration }
 
 /**
- * Filter and map links, metadatas, and variable declaration
+ * Filter and map links, metadatas, and  declaration
  */
-export type GetLink<A, B> = (
-	node: VariableDeclaration,
-) => LinkedVarDecl<A, B> | undefined
+export type GetLink<A, B> = (node: Declaration) => LinkedDecl<A, B> | undefined
 
 export const generateLinks =
-	<A, B>(getLink: GetLink<A, B>) =>
-	(files: SourceFile[]): LinkedVarDecl<A, B>[] =>
+	<A, B>(getLink: GetLink<A, B>) => (files: SourceFile[]): LinkedDecl<A, B>[] =>
 		files.flatMap((file) =>
-			file.getVariableDeclarations().flatMap((node) => getLink(node) ?? [])
+			[
+				...file.getVariableDeclarations(),
+				...file.getClasses(),
+			].flatMap((node) => getLink(node) ?? [])
 		)
 
-export const asMetadataRecord = <A, B>(links: LinkedVarDecl<A, B>[]) =>
+export const asMetadataRecord = <A, B>(links: LinkedDecl<A, B>[]) =>
 	Object.fromEntries(
-		links.map(({ node, ...metadata }) => [node.getName(), metadata]),
+		links.map(({ node, ...metadata }) => [node.getName()!, metadata]),
 	)

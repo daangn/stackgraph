@@ -16,7 +16,7 @@ export const fromDepsMap = (depsMap: DepsMap): LinkDepsGraph =>
 	Stream.from(depsMap)
 		.flatMap(([source, targets]) =>
 			Stream.from(targets)
-				.map((to): GraphElement<string> => [source.getName(), to.getName()])
+				.map((to): GraphElement<string> => [source.getName()!, to.getName()!])
 		)
 		.reduce(ArrowGraphHashed.reducer())
 
