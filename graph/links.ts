@@ -3,11 +3,18 @@ import {
 	VariableDeclaration,
 } from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
 
-export type Relations<A, B> = {
+export type Metadata<A, B> = {
+	/**
+	 * Dependency not originated from module imports.
+	 * For example, `Redirect` in `<Redirect to="ComponentName" />`.
+	 */
 	links: A
+
+	/** All other data to query from given link */
 	metas: B
 }
-export type LinkedVarDecl<A, B> = Relations<A, B> & {
+
+export type LinkedVarDecl<A, B> = Partial<Metadata<A, B>> & {
 	node: VariableDeclaration
 }
 
@@ -17,18 +24,15 @@ export type LinkedVarDecl<A, B> = Relations<A, B> & {
 export type GetLink<A, B> = (
 	node: VariableDeclaration,
 ) => LinkedVarDecl<A, B> | undefined
-type Option<A, B> = {
-	getLink: GetLink<A, B>
-}
 
 export const generateLinks =
-	<A, B>({ getLink }: Option<A, B>) =>
+	<A, B>(getLink: GetLink<A, B>) =>
 	(files: SourceFile[]): LinkedVarDecl<A, B>[] =>
 		files.flatMap((file) =>
 			file.getVariableDeclarations().flatMap((node) => getLink(node) ?? [])
 		)
 
-export const asRelationRecord = <A, B>(links: LinkedVarDecl<A, B>[]) =>
+export const asMetadataRecord = <A, B>(links: LinkedVarDecl<A, B>[]) =>
 	Object.fromEntries(
-		links.map(({ node, ...relations }) => [node.getName(), relations]),
+		links.map(({ node, ...metadata }) => [node.getName(), metadata]),
 	)
