@@ -1,4 +1,4 @@
-import { HashMap, HashSet } from "https://deno.land/x/rimbu@1.1.0/hashed/mod.ts"
+import { HashMap, HashSet } from "https://deno.land/x/rimbu@1.2.0/hashed/mod.ts"
 import { LinkDepsGraph } from "./create.ts"
 
 export type FlatDepsMap = HashMap<string, HashSet<string>>

@@ -11,7 +11,8 @@
 		"proseWrap": "never"
 	},
 	"compilerOptions": {
-		"allowJs": false,
+		"allowJs": true,
+        "checkJs": true,
 		"exactOptionalPropertyTypes": true,
 		"lib": ["deno.window", "dom"],
 		"jsx": "precompile",

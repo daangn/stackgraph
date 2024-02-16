@@ -1,8 +1,9 @@
-import type { GraphElement } from "https://deno.land/x/rimbu@1.1.0/graph/custom/common/link.ts"
-import { ArrowGraphHashed } from "https://deno.land/x/rimbu@1.1.0/graph/mod.ts"
-import { Stream } from "https://deno.land/x/rimbu@1.1.0/stream/mod.ts"
+import type { GraphElement } from "https://deno.land/x/rimbu@1.2.0/graph/custom/common/link.ts"
+import { ArrowGraphHashed } from "https://deno.land/x/rimbu@1.2.0/graph/mod.ts"
+import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
 import { DepsMap } from "./deps_map.ts"
-
+import { a } from "./foo/a.ts"
+a
 /** directed graph of references, using `string` as unique key */
 export type LinkDepsGraph = ArrowGraphHashed<string>
 
