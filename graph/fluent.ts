@@ -1,4 +1,4 @@
-import { Project, SourceFile } from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
+import { Project, SourceFile } from "../deps/ts_morph.ts"
 import { asMetadataRecord, generateLinks } from "./links.ts"
 import type { GetLink, LinkedDecl, Metadata } from "./links.ts"
 import { fromLinks } from "./deps_map.ts"
