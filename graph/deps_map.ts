@@ -14,13 +14,13 @@ export type DepsMap = Map<Declaration, Declaration[]>
  * @privateRemarks
  *
  * FIXME(#1): handle destructuring and multiple variable declarations
+ * RFC: only track top-level declarations or inside if statements?
+ * FIXME: also track `function` statements, are there other types of declarations?
  */
 const getTopmostVarDecl = (
 	ref: ReferencedSymbolEntry,
 ): Declaration | undefined => {
-	const target = ref
-		.getNode()
-		.getAncestors()
+	const target = ref.getNode().getAncestors()
 
 	// 	.at(-2) // HACK: last is SourceFile, second to last is the variable/class declaration
 

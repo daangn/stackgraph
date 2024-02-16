@@ -11,6 +11,8 @@ export type LinkDepsGraph = ArrowGraphHashed<string>
  *
  * uses `Node.getName` as unique key which is prone to collisions
  * if there are multiple variables with the same name
+ *
+ * FIXME: assumes class declaration has names (hence `!`)
  */
 export const fromDepsMap = (depsMap: DepsMap): LinkDepsGraph =>
 	Stream.from(depsMap)

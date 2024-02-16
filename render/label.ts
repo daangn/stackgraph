@@ -2,7 +2,7 @@ import { distinct } from "https://deno.land/std@0.215.0/collections/distinct.ts"
 
 import type { Flows } from "./data.ts"
 
-const toUl = (xs: string[]) => {
+export const toUl = (xs: string[]) => {
 	const ys = xs.map((x) => /*html*/ `<li>${x}</li>`).join("\n")
 	return /*html*/ `<ul>${ys}</ul>`
 }

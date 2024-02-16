@@ -16,7 +16,7 @@
 		"lib": ["deno.window", "dom"],
 		"jsx": "precompile",
 		"jsxImportSource": "npm:preact",
-		"types": ["./main.d.ts", "lume/types.ts"]
+		"types": ["./render/main.d.ts", "lume/types.ts"]
 	},
 	"imports": {
 		"lume/": "https://deno.land/x/lume@v2.0.3/"
