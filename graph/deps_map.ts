@@ -1,13 +1,17 @@
 import {
-	ClassDeclaration,
+	type ClassDeclaration,
+	type FunctionDeclaration,
 	ReferencedSymbol,
 	ReferencedSymbolEntry,
 	type SourceFile,
 	SyntaxKind,
-	VariableDeclaration,
+	type VariableDeclaration,
 } from "../deps/ts_morph.ts"
 
-export type Declaration = VariableDeclaration | ClassDeclaration
+export type Declaration =
+	| VariableDeclaration
+	| ClassDeclaration
+	| FunctionDeclaration
 
 export type DepsMap = Map<Declaration, Declaration[]>
 /**
