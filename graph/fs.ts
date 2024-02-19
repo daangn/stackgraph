@@ -12,7 +12,7 @@ export class FilteredFSHost extends RealFileSystemHost {
 		return this.ignore(path) ? Promise.resolve(false) : super.fileExists(path)
 	}
 	override fileExistsSync(path: string): boolean {
-        // console.log("fileExistsSync", path)
+		// console.log("fileExistsSync", path)
 		return this.ignore(path) ? false : super.fileExistsSync(path)
 	}
 

@@ -1,5 +1,5 @@
 {
-	"exclude": ["render/assets", "_site"],
+	"exclude": ["doc/assets", "render/assets", "_site"],
 	"tasks": {
 		"lume": "echo \"import 'lume/cli.ts'\" | deno run --unstable -A -",
 		"build": "deno task lume",
@@ -12,7 +12,7 @@
 	},
 	"compilerOptions": {
 		"allowJs": true,
-        "checkJs": true,
+		"checkJs": true,
 		"exactOptionalPropertyTypes": true,
 		"lib": ["deno.window", "dom"],
 		"jsx": "precompile",

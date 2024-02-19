@@ -30,7 +30,7 @@ type CustomNode = Node & {
 
 let highlight: Node | null = null
 
-const Graph = ForceGraph()(dom).graphData(data)
+const _Graph = ForceGraph()(dom).graphData(data)
 	.linkDirectionalArrowLength(3)
 	.linkLineDash((d) => (d as Link).type === "replace" ? [1, 1] : null)
 	.linkWidth((d) => {
