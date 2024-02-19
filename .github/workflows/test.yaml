@@ -1,0 +1,53 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  DENO_DIR: /home/runner/.cache/deno
+
+jobs:
+  lint_and_fmt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Deno dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.DENO_DIR }}
+          key: ${{ hashFiles('deno.lock') }}
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+
+      - name: Lint files
+        run: deno lint
+      - name: Check formatting
+        run: deno fmt --check
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        deno: [v1.x, canary]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Deno dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.DENO_DIR }}
+          key: ${{ hashFiles('deno.lock') }}
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ matrix.deno }}
+
+      - name: Run unit tests on Deno
+        run: deno test --allow-none
