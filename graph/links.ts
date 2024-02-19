@@ -1,14 +1,22 @@
+import {
+	Stream,
+	StreamSource,
+} from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
 import { SourceFile } from "../deps/ts_morph.ts"
 import { Declaration } from "./deps_map.ts"
 
-export type FilterEntryPoint = (node: Declaration) => boolean
-export const filterEntryPoints =
-	(filter: FilterEntryPoint) => (files: SourceFile[]): Declaration[] =>
-		files.flatMap((file) =>
-			[
-				...file.getVariableDeclarations(),
-				...file.getClasses(),
-			].filter(filter)
+/**
+ * Find initial declarations to begin analyze with.
+ */
+export const getDecls =
+	(filter: (node: Declaration) => boolean) =>
+	(files: StreamSource<SourceFile>): Stream<Declaration> =>
+		Stream.from(files).flatMap((file) =>
+			Stream.from<Declaration>(
+				file.getVariableDeclarations(),
+				file.getFunctions(),
+				file.getClasses(),
+			).filter(filter)
 		)
 
 export const asMetadataRecord = <A, B>(links: LinkedDecl<A, B>[]) =>
