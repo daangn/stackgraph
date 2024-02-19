@@ -33,20 +33,21 @@ export type Node = {
 	type: Type
 }
 
-const styleNode = <const T extends { id: string, path: string }>(node: T) => {
+const linkNode = <const T extends { id: string; path: string }>(node: T) => {
 	const dir = dirname(node.path)
 
 	return {
 		...node,
 		dir,
 		url: `https://github.com/daangn/stackgraph/tree/main/${node.path}`,
-		...colors(hashRGB(dir)),
 	}
 }
 
-const distinctByPath = HashSet.createContext<RawNode>({
-	eq: (a, b) => a.path === b.path,
+const colorNode = <const T extends { dir: string }>(node: T) => ({
+	...node,
+	...colors(hashRGB(node.dir)),
 })
+
 const distinctById = HashSet.createContext<RawNode>({
 	eq: (a, b) => a.id === b.id,
 })
@@ -78,12 +79,12 @@ if (import.meta.main) {
 	const dirLinks = Stream.from(nodes)
 		.stream()
 		.flatMap((node) => {
-			console.log(
-				Stream.from(ancestors(node.path)).append(node.id).window(
-					2,
-					{ skipAmount: 1 },
-				).toArray(),
-			)
+			// console.log(
+			// 	Stream.from(ancestors(node.path)).append(node.id).window(
+			// 		2,
+			// 		{ skipAmount: 1 },
+			// 	).toArray(),
+			// )
 			const newLocal = Stream.from(ancestors(node.path)).append(node.id).window(
 				2,
 				{ skipAmount: 1 },
@@ -96,12 +97,14 @@ if (import.meta.main) {
 		.reduce(HashSet.reducer())
 		.toArray()
 
-	const dirNodes: RawNode[] = Stream.from(nodes)
+	const dirNodes = Stream.from(nodes)
 		.flatMap((node) =>
 			ancestors(node.path).map((path) => ({
 				id: path,
 				path,
 				type: "path" as const,
+				color: "#bdbbbb48",
+				textColor: "#00000080",
 			}))
 		)
 		.reduce(distinctById.reducer())
@@ -112,7 +115,10 @@ if (import.meta.main) {
 		JSON.stringify(
 			{
 				links: Stream.from(links, dirLinks).toArray(),
-				nodes: Stream.from(nodes, dirNodes).map(styleNode).toArray(),
+				nodes: [
+					...nodes.map(linkNode).map(colorNode),
+					...dirNodes.map(linkNode),
+				],
 			} satisfies { links: Link[]; nodes: Node[] },
 			null,
 			2,
