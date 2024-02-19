@@ -1,6 +1,6 @@
 const readme = () =>
 	Deno.readTextFile(import.meta.dirname + "/../README.md")
-		.then((text) => text.replace("# StackGraph", ""))
+		.then((text) => text.split("\n").slice(3).join("\n"))
 
 const header = /*md*/ `
 # [StackGraph](https://github.com/daangn/stackgraph)
