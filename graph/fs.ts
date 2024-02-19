@@ -1,24 +1,28 @@
 import { RealFileSystemHost } from "https://deno.land/x/ts_morph@21.0.1/common/mod.ts"
 
+/**
+ * Intercepts and skips file & directory lookup to speed up the process
+ */
 export class FilteredFSHost extends RealFileSystemHost {
 	constructor(readonly ignore: (path: string) => boolean) {
 		super()
 	}
 
-	override fileExists(filePath: string): Promise<boolean> {
-		if (this.ignore(filePath)) return Promise.resolve(false)
-		return super.fileExists(filePath)
+	override fileExists(path: string): Promise<boolean> {
+		return this.ignore(path) ? Promise.resolve(false) : super.fileExists(path)
 	}
-	override fileExistsSync(filePath: string): boolean {
-		if (this.ignore(filePath)) return false
-		return super.fileExistsSync(filePath)
+	override fileExistsSync(path: string): boolean {
+		// console.log("fileExistsSync", path)
+		return this.ignore(path) ? false : super.fileExistsSync(path)
 	}
-	override directoryExists(dirPath: string): Promise<boolean> {
-		if (this.ignore(dirPath)) return Promise.resolve(false)
-		return super.directoryExists(dirPath)
+
+	override directoryExists(path: string): Promise<boolean> {
+		return this.ignore(path)
+			? Promise.resolve(false)
+			: super.directoryExists(path)
 	}
-	override directoryExistsSync(dirPath: string): boolean {
-		if (this.ignore(dirPath)) return false
-		return super.directoryExistsSync(dirPath)
+	override directoryExistsSync(path: string): boolean {
+		// console.log("directoryExistsSync", path)
+		return this.ignore(path) ? false : super.directoryExistsSync(path)
 	}
 }
