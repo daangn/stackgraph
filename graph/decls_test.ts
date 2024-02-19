@@ -1,5 +1,5 @@
-import type { Declaration } from "../graph/deps_map.ts"
-import { getDecls } from "../graph/links.ts"
+import type { Declaration } from "./decl_deps.ts"
+import { getDecls } from "./decls.ts"
 import { assertEquals } from "https://deno.land/std@0.216.0/assert/assert_equals.ts"
 import { declExampleText } from "./_example_project.ts"
 import { inMemoryProject } from "./_project.ts"

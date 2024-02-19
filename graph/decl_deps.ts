@@ -13,7 +13,8 @@ export type Declaration =
 	| ClassDeclaration
 	| FunctionDeclaration
 
-export type DepsMap = Map<Declaration, Declaration[]>
+export type DeclDeps = Map<Declaration, Declaration[]>
+
 /**
  * @privateRemarks
  *
@@ -58,8 +59,8 @@ const getReferencedVarDecls = (node: Declaration): Declaration[] => {
 }
 
 /** Recursively query variable references into key-value map */
-export const fromLinks = (links: Declaration[]): DepsMap => {
-	const graph: DepsMap = new Map()
+export const getDeclDeps = (links: Declaration[]): DeclDeps => {
+	const graph: DeclDeps = new Map()
 
 	let current = links
 	while (current.length > 0) {

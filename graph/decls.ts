@@ -3,7 +3,7 @@ import {
 	StreamSource,
 } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
 import { SourceFile } from "../deps/ts_morph.ts"
-import { Declaration } from "./deps_map.ts"
+import { Declaration } from "./decl_deps.ts"
 
 /**
  * Find initial declarations to begin analyze with.

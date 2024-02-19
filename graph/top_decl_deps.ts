@@ -1,7 +1,7 @@
 import { HashMap, HashSet } from "https://deno.land/x/rimbu@1.2.0/hashed/mod.ts"
-import { LinkDepsGraph } from "./create.ts"
+import type { Graph, Id } from "./graph.ts"
 
-export type FlatDepsMap = HashMap<string, HashSet<string>>
+export type TopDeclDeps = HashMap<Id, HashSet<Id>>
 
 /**
  * Flattens graph of references into top-level links
@@ -20,7 +20,7 @@ export type FlatDepsMap = HashMap<string, HashSet<string>>
  * TOP2 <- B, a, c
  * ```
  */
-export const fromGraph = (graph: LinkDepsGraph): FlatDepsMap => {
+export const graphToTopDeclDeps = (graph: Graph): TopDeclDeps => {
 	const topLevelNodes = graph.streamNodes()
 		.filter((node) => graph.getConnectionsFrom(node).size === 0)
 
