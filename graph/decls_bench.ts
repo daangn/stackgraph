@@ -1,6 +1,6 @@
 import { SourceFile } from "../deps/ts_morph.ts"
-import type { Declaration } from "./deps_map.ts"
-import { getDecls as getDeclsStream } from "./links.ts"
+import type { Declaration } from "./decl_deps.ts"
+import { getDecls as getDeclsStream } from "./decls.ts"
 import { getDeclExampleFile } from "./_example_project.ts"
 
 /**
