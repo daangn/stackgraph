@@ -1,5 +1,5 @@
 import { Project, SourceFile } from "../deps/ts_morph.ts"
-import { asMetadataRecord, generateLinks } from "./links.ts"
+import { asMetadataRecord, filterEntryPoints } from "./links.ts"
 import type { GetLink, LinkedDecl, Metadata } from "./links.ts"
 import { fromLinks } from "./deps_map.ts"
 import { FlatDepsMap, fromGraph } from "./flatten.ts"
@@ -47,7 +47,7 @@ export class StackGraphBuilder<A, B> {
 			.getSourceFiles()
 			.filter((x) => filesToAnalyze(x.getFilePath()))
 
-		return new StackGraph<A, B>(generateLinks(filterMapLinks)(files))
+		return new StackGraph<A, B>(filterEntryPoints(filterMapLinks)(files))
 	}
 }
 
@@ -64,7 +64,7 @@ export class StackGraph<A, B> {
 
 	static searchAll(files: SourceFile[]) {
 		return new StackGraph(
-			generateLinks((node) => ({
+			filterEntryPoints((node) => ({
 				node,
 				links: undefined,
 				metas: undefined,
