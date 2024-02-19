@@ -1,5 +1,7 @@
 # StackGraph
 
+![image](https://github.com/daangn/stackgraph/assets/54838975/7b588ccd-e2ad-48bd-ae88-498630cba986)
+
 **StackGraph**는 [타입스크립트 AST 정적 분석](https://github.com/dsherret/ts-morph)을 통해 변수 단위의 의존성을 분석하고 시각화하는 툴킷을 제공해요.
 
 - 컴포넌트 사이의 의존성을 관계도로 시각화해요.
