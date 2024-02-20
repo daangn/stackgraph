@@ -53,3 +53,33 @@ export const getDeclExampleFile = (amount: number) => {
 
 	return project.createSourceFile("a.ts", text)
 }
+
+export const exampleSrc = {
+	"a.ts": /*javascript*/ `
+        export const a = "a"
+
+	    export const aaa = () => a
+	`,
+	"b.tsx": /*javascript*/ `
+        import { a, aaa } from "./a.ts"
+        export { a }
+
+        export const Comp = () => <div>{a}</div>
+        export const CompAAA = () => <div>{aaa()}</div>
+
+        // unrelated to a and should be ignored
+        export const Unrelated = () => <div>Unrelated</div>
+    `,
+	"c.tsx": /*javascript*/ `
+        import { Comp } from "./b.tsx"
+
+        export const Page = () => <div><Comp/></div>
+    `,
+	"d.tsx": /*javascript*/ `
+        import { a } from "./b.tsx"
+        import { Page } from "./c.tsx"
+
+        export const InnerImport = () => <Page/>
+        export const AliasedImport = () => <div>{a}</div>
+    `,
+}
