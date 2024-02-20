@@ -1,3 +1,4 @@
+import { Reducer, Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
 import {
 	type ClassDeclaration,
 	type FunctionDeclaration,
@@ -16,15 +17,15 @@ export type Declaration =
 export type DeclDeps = Map<Declaration, Declaration[]>
 
 /**
+ * Get the topmost declaration
+ *
  * @privateRemarks
  *
  * FIXME(#1): handle destructuring and multiple variable declarations
  * RFC: only track top-level declarations or inside if statements?
  * FIXME: also track `function` statements, are there other types of declarations?
  */
-const getTopmostVarDecl = (
-	ref: ReferencedSymbolEntry,
-): Declaration | undefined => {
+const getTopDecl = (ref: ReferencedSymbolEntry): Declaration | undefined => {
 	const target = ref.getNode().getAncestors()
 
 	// 	.at(-2) // HACK: last is SourceFile, second to last is the variable/class declaration
@@ -39,21 +40,28 @@ const getTopmostVarDecl = (
 		x.isKind(SyntaxKind.ClassDeclaration)
 	)
 }
-// TODO: use isDefinition()?
+
+/**
+ * Find all references in other files
+ *
+ * TODO: also check for same file? (not neccesary for default exports)
+ * TODO: use isDefinition()?
+ */
 const getActualReferences =
 	(file: SourceFile) => (symbol: ReferencedSymbol): ReferencedSymbolEntry[] =>
 		symbol
 			.getReferences()
+			// .filter(ref => ref.getNode() !== symbol.getDefinition().getNode())
 			.filter((ref) => ref.getSourceFile().getFilePath() !== file.getFilePath())
 			.filter((ref) =>
 				ref.getNode().getParent()?.getKindName() !== "ImportClause"
 			)
 
-const getReferencedVarDecls = (node: Declaration): Declaration[] => {
+const getReferencedDecls = (node: Declaration): Declaration[] => {
 	const file = node.getSourceFile()
 	const varDecls = node.findReferences()
 		.flatMap(getActualReferences(file))
-		.flatMap((x) => getTopmostVarDecl(x) ?? [])
+		.flatMap((x) => getTopDecl(x) ?? [])
 
 	return varDecls
 }
@@ -65,10 +73,17 @@ export const getDeclDeps = (links: Declaration[]): DeclDeps => {
 	let current = links
 	while (current.length > 0) {
 		current = current.flatMap((node) => {
-			const references = getReferencedVarDecls(node)
+			const references = getReferencedDecls(node)
 			graph.set(node, references)
 			return references
 		})
 	}
 	return graph
 }
+
+export const asNameRecord = (declDeps: DeclDeps): Record<string, Set<string>> =>
+	Stream.from(declDeps.entries())
+		.map(([decl, deps]) =>
+			[decl.getName()!, new Set(deps.map((dep) => dep.getName()!))] as const
+		)
+		.reduce(Reducer.toJSObject())
