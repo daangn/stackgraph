@@ -1,0 +1,30 @@
+export const snapshot = {};
+
+snapshot[`declDepsToGraph() converts declDeps into valid graph 1`] = `
+{
+  "/d.tsx": {
+    "InnerImport (/d.tsx:5:22)": [],
+    "AliasedImport (/d.tsx:6:22)": []
+  },
+  "/c.tsx": {
+    "Page (/c.tsx:8:22)": [
+      "InnerImport (/d.tsx:5:22)"
+    ]
+  },
+  "/b.tsx": {
+    "CompAAA (/b.tsx:6:22)": [],
+    "Comp (/b.tsx:5:22)": [
+      "Page (/c.tsx:8:22)"
+    ]
+  },
+  "/a.ts": {
+    "a (/a.ts:2:22)": [
+      "Comp (/b.tsx:5:22)",
+      "AliasedImport (/d.tsx:6:22)"
+    ],
+    "aaa (/a.ts:4:19)": [
+      "CompAAA (/b.tsx:6:22)"
+    ]
+  }
+}
+`;

@@ -1,11 +1,10 @@
 import { Project, SourceFile } from "../deps/ts_morph.ts"
-import { asMetadataRecord, filterEntryPoints } from "./links.ts"
-import type { GetLink, LinkedDecl, Metadata } from "./links.ts"
-import { fromLinks } from "./deps_map.ts"
-import { FlatDepsMap, fromGraph } from "./flatten.ts"
-import { fromDepsMap, LinkDepsGraph } from "./create.ts"
+import { asMetadataRecord, getDecls } from "./decls.ts"
+import { getDeclDeps } from "./decl_deps.ts"
+import { graphToTopDeclDeps, TopDeclDeps } from "./top_decl_deps.ts"
+import { declDepsToGraph, Graph } from "./graph.ts"
 import { FilteredFSHost } from "./fs.ts"
-import { DepsMap } from "./deps_map.ts"
+import { DeclDeps } from "./decl_deps.ts"
 
 type StackGraphBuilderPreset<A, B> = {
 	ignoreImports: (path: string) => boolean
@@ -47,7 +46,7 @@ export class StackGraphBuilder<A, B> {
 			.getSourceFiles()
 			.filter((x) => filesToAnalyze(x.getFilePath()))
 
-		return new StackGraph<A, B>(filterEntryPoints(filterMapLinks)(files))
+		return new StackGraph<A, B>(getDecls(filterMapLinks)(files))
 	}
 }
 
@@ -55,16 +54,16 @@ export class StackGraphBuilder<A, B> {
  * StackGraph API wrapped into fluent interface with lazy evaluation.
  */
 export class StackGraph<A, B> {
-	private depsMapCache: DepsMap | undefined
-	private graphCache: LinkDepsGraph | undefined
-	private flatGraphCache: FlatDepsMap | undefined
+	private depsMapCache: DeclDeps | undefined
+	private graphCache: Graph | undefined
+	private flatGraphCache: TopDeclDeps | undefined
 	private metadataCache: Record<string, Metadata<A, B>> | undefined
 
 	constructor(readonly links: LinkedDecl<A, B>[]) {}
 
 	static searchAll(files: SourceFile[]) {
 		return new StackGraph(
-			filterEntryPoints((node) => ({
+			getDecls((node) => ({
 				node,
 				links: undefined,
 				metas: undefined,
@@ -83,7 +82,7 @@ export class StackGraph<A, B> {
 	/** recursively collect all descendants referencing links into map */
 	get depsMap() {
 		if (!this.depsMapCache) {
-			this.depsMapCache = fromLinks(this.links.map((x) => x.node))
+			this.depsMapCache = getDeclDeps(this.links.map((x) => x.node))
 		}
 		return this.depsMapCache
 	}
@@ -91,7 +90,7 @@ export class StackGraph<A, B> {
 	/** directed graph of references from initial links */
 	get graph() {
 		if (!this.graphCache) {
-			this.graphCache = fromDepsMap(this.depsMap)
+			this.graphCache = declDepsToGraph(this.depsMap)
 		}
 		return this.graphCache
 	}
@@ -99,7 +98,7 @@ export class StackGraph<A, B> {
 	/** flattened graph of references into top-level links */
 	get flatGraph() {
 		if (!this.flatGraphCache) {
-			this.flatGraphCache = fromGraph(this.graph)
+			this.flatGraphCache = graphToTopDeclDeps(this.graph)
 		}
 		return this.flatGraphCache
 	}

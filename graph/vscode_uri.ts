@@ -12,7 +12,7 @@ import { typedRegEx } from "https://deno.land/x/typed_regex@0.2.0/mod.ts"
  *
  * RFC: encode project source file commit SHA for validation?
  */
-export type VSCodeURI = `vscode://file/${string}?kind=${string}`
+export type VSCodeURI = `vscode://file/${string}?${string}`
 
 /** Encode {@link Node} into {@link VSCodeURI} */
 export const encodeVSCodeURI = (node: Node): VSCodeURI => {
@@ -21,13 +21,16 @@ export const encodeVSCodeURI = (node: Node): VSCodeURI => {
 
 	const { line, column } = srcfile.getLineAndColumnAtPos(node.getStart())
 
+	const searchParams = new URLSearchParams({ kind: node.getKindName() })
+	if (Node.hasName(node)) searchParams.set("name", node.getName())
+
 	// console.log(node.getStart(), node.getText(), {
 	// 	line,
 	// 	column,
 	// 	kind: node.getKindName(),
 	// })
 
-	return `vscode://file/${path}:${line}:${column}?kind=${node.getKindName()}`
+	return `vscode://file/${path}:${line}:${column}?${searchParams}`
 }
 
 /**
@@ -75,3 +78,19 @@ const vscodeURIPattern = typedRegEx(
 
 const isValidSyntaxKind = (kind: string): kind is keyof typeof ts.SyntaxKind =>
 	kind in ts.SyntaxKind
+
+export const prettyPrintURI = (uri: VSCodeURI) => {
+	const { name, fullPath } = parseVSCodeURI(uri)
+
+	return `${name} (${fullPath})`
+}
+
+export const parseVSCodeURI = (uri: VSCodeURI) => {
+	const url = new URL(uri)
+	const fullPath = url.pathname.replace("vscode://file", "")
+	const [path, line, column] = fullPath.split(":")
+	const name = url.searchParams.get("name")
+	const kind = url.searchParams.get("kind")
+
+	return { uri, url, fullPath, path, line, column, name, kind }
+}

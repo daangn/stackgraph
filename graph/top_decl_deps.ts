@@ -1,7 +1,8 @@
 import { HashMap, HashSet } from "https://deno.land/x/rimbu@1.2.0/hashed/mod.ts"
-import type { Graph, Id } from "./graph.ts"
+import type { Graph } from "./graph.ts"
+import { VSCodeURI } from "./vscode_uri.ts"
 
-export type TopDeclDeps = HashMap<Id, HashSet<Id>>
+export type TopDeclDeps = HashMap<VSCodeURI, HashSet<VSCodeURI>>
 
 /**
  * Flattens graph of references into top-level links
@@ -30,8 +31,8 @@ export const graphToTopDeclDeps = (graph: Graph): TopDeclDeps => {
 				page,
 				graph
 					.getConnectionStreamFrom(page)
-					// .map(([, to]) => to)
-					.flatMap(([, to]) => to ?? [])
+					.map(([, to]) => to)
+					.filter((to) => to !== undefined)
 					.reduce(HashSet.reducer()),
 			] as const
 		)

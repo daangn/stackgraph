@@ -14,7 +14,6 @@
 		"allowJs": true,
 		"checkJs": true,
 		"exactOptionalPropertyTypes": true,
-		"lib": ["deno.window", "dom"],
 		"jsx": "precompile",
 		"jsxImportSource": "npm:preact",
 		"types": ["./render/main.d.ts", "lume/types.ts"]

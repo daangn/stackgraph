@@ -62,7 +62,7 @@ export const exampleSrc = {
 	`,
 	"b.tsx": /*javascript*/ `
         import { a, aaa } from "./a.ts"
-        export { a }
+        export { a as exportedA }
 
         export const Comp = () => <div>{a}</div>
         export const CompAAA = () => <div>{aaa()}</div>
@@ -73,13 +73,17 @@ export const exampleSrc = {
 	"c.tsx": /*javascript*/ `
         import { Comp } from "./b.tsx"
 
+        // a variable of same name is in a.ts but
+        // shoudl be treated as different variable
+        export const a = "1234"
+
         export const Page = () => <div><Comp/></div>
     `,
 	"d.tsx": /*javascript*/ `
-        import { a } from "./b.tsx"
+        import { exportedA } from "./b.tsx"
         import { Page } from "./c.tsx"
 
         export const InnerImport = () => <Page/>
-        export const AliasedImport = () => <div>{a}</div>
+        export const AliasedImport = () => <div>{exportedA}</div>
     `,
 }

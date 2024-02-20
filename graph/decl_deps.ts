@@ -8,6 +8,7 @@ import {
 	SyntaxKind,
 	type VariableDeclaration,
 } from "../deps/ts_morph.ts"
+import { encodeVSCodeURI, prettyPrintURI } from "./vscode_uri.ts"
 
 export type Declaration =
 	| VariableDeclaration
@@ -66,7 +67,9 @@ const getReferencedDecls = (node: Declaration): Declaration[] => {
 	return varDecls
 }
 
-/** Recursively query variable references into key-value map */
+/**
+ * Recursively query **direct** variable references into key-value map.
+ */
 export const getDeclDeps = (links: Declaration[]): DeclDeps => {
 	const graph: DeclDeps = new Map()
 
@@ -81,9 +84,16 @@ export const getDeclDeps = (links: Declaration[]): DeclDeps => {
 	return graph
 }
 
-export const asNameRecord = (declDeps: DeclDeps): Record<string, Set<string>> =>
-	Stream.from(declDeps.entries())
-		.map(([decl, deps]) =>
-			[decl.getName()!, new Set(deps.map((dep) => dep.getName()!))] as const
-		)
-		.reduce(Reducer.toJSObject())
+export const asRecord =
+	<T extends string | number | symbol>(fn: (decl: Declaration) => T) =>
+	(declDeps: DeclDeps): Record<T, Set<T>> =>
+		Stream.from(declDeps.entries())
+			.map(([decl, deps]) => [fn(decl), new Set(deps.map(fn))] as [T, Set<T>])
+			.reduce(Reducer.toJSObject())
+
+export const declDepsSerializer = (declDeps: DeclDeps) =>
+	JSON.stringify(
+		asRecord((x) => prettyPrintURI(encodeVSCodeURI(x)))(declDeps),
+		(_, v) => v instanceof Set ? [...v] : v,
+		2,
+	)
