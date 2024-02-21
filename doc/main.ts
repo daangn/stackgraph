@@ -1,14 +1,15 @@
 import { relative } from "https://deno.land/std@0.216.0/path/relative.ts"
 import { dirname } from "https://deno.land/std@0.216.0/path/dirname.ts"
-
 import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { HashSet } from "https://deno.land/x/rimbu@1.2.0/hashed/mod.ts"
 
 import { Project } from "../deps/ts_morph.ts"
-import { StackGraph } from "../graph/fluent.ts"
+
 import { colors, hashRGB } from "../render/colors.ts"
 import { denoProjectOption } from "../utils/project.ts"
 import { ancestors } from "./ancestors.ts"
-import { HashSet } from "https://deno.land/x/rimbu@1.2.0/hashed/mod.ts"
+import { declDepsToGraph, getAllDecls, getDeclDeps } from "../graph/mod.ts"
+import { parseVSCodeURI } from "../graph/vscode_uri.ts"
 
 /**
  * Generate dependency map of **StackGraph** itself
@@ -54,22 +55,26 @@ const distinctById = HashSet.createContext<RawNode>({
 
 if (import.meta.main) {
 	const project = new Project(denoProjectOption)
+
 	const root = import.meta.dirname + "/../"
 	const files = project.addSourceFilesAtPaths(
 		import.meta.dirname + "/../**/*.ts",
 	)
 
-	const stackgraph = StackGraph.searchAll(files)
-	const links: Link[] = stackgraph.graph.streamConnections()
+	const decls = Stream.fromObjectValues(files).flatMap(getAllDecls).toArray()
+	const declDeps = getDeclDeps(decls)
+	const graph = declDepsToGraph(declDeps)
+
+	const links: Link[] = graph.streamConnections()
 		.map(([source, target]) => ({
-			source,
-			target,
+			source: parseVSCodeURI(source).name!,
+			target: parseVSCodeURI(target).name!,
 			color: "#ff6e61",
 			type: "import",
 		} as const))
 		.toArray()
 
-	const nodes: RawNode[] = Array.from(stackgraph.depsMap.keys())
+	const nodes: RawNode[] = Array.from(declDeps.keys())
 		.map((node) => ({
 			id: node.getName()!,
 			path: relative(root, node.getSourceFile().getFilePath()),
@@ -79,16 +84,8 @@ if (import.meta.main) {
 	const dirLinks = Stream.from(nodes)
 		.stream()
 		.flatMap((node) => {
-			// console.log(
-			// 	Stream.from(ancestors(node.path)).append(node.id).window(
-			// 		2,
-			// 		{ skipAmount: 1 },
-			// 	).toArray(),
-			// )
-			const newLocal = Stream.from(ancestors(node.path)).append(node.id).window(
-				2,
-				{ skipAmount: 1 },
-			)
+			const newLocal = Stream.from(ancestors(node.path)).append(node.id)
+				.window(2, { skipAmount: 1 })
 				.map(([target, source]) =>
 					({ source, target, color: "#dacaca", type: "path" }) as const
 				)
