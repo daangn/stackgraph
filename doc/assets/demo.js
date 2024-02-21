@@ -4,7 +4,6 @@
 /// <reference lib="dom" />
 
 import ForceGraph from "https://esm.sh/force-graph@1.43.4"
-import { forceCluster } from "https://esm.sh/d3-force-cluster"
 
 // import ForceGraph2D from "https://esm.sh/react-force-graph-2d@1.25.4"
 // import ReactDom from "https://esm.sh/react-dom@17"
@@ -18,8 +17,19 @@ const graphDom = document.querySelector("div#graph")
 if (!graphDom) throw new Error("graph dom not found")
 
 const data = await fetch("./assets/data.json").then((res) => res.json())
+const imports = Object.fromEntries(
+	Object.entries(Object.groupBy(data.imports, (x) => x.source))
+		.map((
+			[k, v],
+		) => [k, v.map((x) => data.nodes.find((node) => node.id === x.target))]),
+)
 
+let hoveredNode
+
+// console.log(imports)
 // ReactDOM.render()
+const ARROW_WH_RATIO = 1.6
+const ARROW_VLEN_RATIO = 0.2
 
 const graph = ForceGraph()(graphDom)
 	.width(graphDom.clientWidth)
@@ -29,10 +39,16 @@ const graph = ForceGraph()(graphDom)
 	.nodeAutoColorBy("path")
 	.linkAutoColorBy("color")
 	.nodeLabel("url")
-	.linkDirectionalArrowLength(6)
-	.linkWidth((link) => link.type === "import" ? 3 : 0.5)
+	.linkDirectionalArrowLength(3)
+	.linkWidth(0.5)
 	.nodeCanvasObject((node, ctx, globalScale) => {
-		const label = /**@type{string}*/ (node.id)
+		ctx.globalAlpha = hoveredNode
+			? ((hoveredNode === node || imports[hoveredNode.id]?.includes(node))
+				? 1
+				: 0.1)
+			: 1
+
+		const label = /**@type{string}*/ (node.name)
 		const fontSize = (node.type === "import" ? 20 : 16) / globalScale
 		ctx.font = `${fontSize}px Sans-Serif`
 		const textWidth = ctx.measureText(label).width
@@ -80,6 +96,97 @@ const graph = ForceGraph()(graphDom)
 		node.bgWidth = bgWidth
 		// @ts-ignore: to re-use in nodePointerAreaPaint
 		node.bgHeight = bgHeight
+
+		// if (hoveredNode === node) {
+		{
+			ctx.save()
+			ctx.globalAlpha = (hoveredNode === node) ? 1 : 0.25
+			ctx.lineWidth = (hoveredNode === node) ? 3 : 1
+			const arrowLength = (hoveredNode === node) ? 24 : 6
+			const arrowRelPos = 0.5
+			const arrowColor = node.color // "rgba(241, 21, 21, 0.521)"
+			const arrowHalfWidth = arrowLength / ARROW_WH_RATIO / 2
+
+			imports[node.id]?.forEach((target) => {
+				// draws line
+				ctx.beginPath()
+				ctx.moveTo(
+					// @ts-ignore: node do has x and y but force-graph marks it optional
+					node.x,
+					// @ts-ignore: node do has x and y but force-graph marks it optional
+					node.y,
+				)
+				ctx.lineTo(
+					// @ts-ignore: node do has x and y but force-graph marks it optional
+					target.x,
+					// @ts-ignore: node do has x and y but force-graph marks it optional
+					target.y,
+				)
+				ctx.strokeStyle = arrowColor
+				ctx.stroke()
+
+				// draws arrow
+
+				const start = node
+				const end = target
+
+				if (
+					!start || !end || !start.hasOwnProperty("x") ||
+					!end.hasOwnProperty("x")
+				) return // skip invalid link
+
+				// Construct bezier for curved lines
+				// const bzLine = link.__controlPoints &&
+				// 	new Bezier(start.x, start.y, ...link.__controlPoints, end.x, end.y)
+
+				const getCoordsAlongLine =
+					// bzLine
+					// 	? (t) => bzLine.get(t) // get position along bezier line
+					// 	:
+					(t) => ({ // straight line: interpolate linearly
+						x: start.x + (end.x - start.x) * t || 0,
+						y: start.y + (end.y - start.y) * t || 0,
+					})
+
+				const lineLen =
+					// bzLine
+					// 	? bzLine.length()
+					// 	:
+					Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2))
+
+				const posAlongLine = 1 + arrowLength +
+					(lineLen - 1 - 1 - arrowLength) * arrowRelPos
+
+				const arrowHead = getCoordsAlongLine(posAlongLine / lineLen)
+				const arrowTail = getCoordsAlongLine(
+					(posAlongLine - arrowLength) / lineLen,
+				)
+				const arrowTailVertex = getCoordsAlongLine(
+					(posAlongLine - arrowLength * (1 - ARROW_VLEN_RATIO)) / lineLen,
+				)
+
+				const arrowTailAngle =
+					Math.atan2(arrowHead.y - arrowTail.y, arrowHead.x - arrowTail.x) -
+					Math.PI / 2
+
+				ctx.beginPath()
+
+				ctx.moveTo(arrowHead.x, arrowHead.y)
+				ctx.lineTo(
+					arrowTail.x + arrowHalfWidth * Math.cos(arrowTailAngle),
+					arrowTail.y + arrowHalfWidth * Math.sin(arrowTailAngle),
+				)
+				ctx.lineTo(arrowTailVertex.x, arrowTailVertex.y)
+				ctx.lineTo(
+					arrowTail.x - arrowHalfWidth * Math.cos(arrowTailAngle),
+					arrowTail.y - arrowHalfWidth * Math.sin(arrowTailAngle),
+				)
+
+				ctx.fillStyle = arrowColor
+				ctx.fill()
+			})
+			ctx.restore()
+		}
 	})
 	.nodePointerAreaPaint((node, color, ctx) => {
 		ctx.fillStyle = color
@@ -96,8 +203,16 @@ const graph = ForceGraph()(graphDom)
 	})
 	// @ts-ignore: node has url but force-graph lacks generics to know it
 	.onNodeClick((node) => globalThis.open(node.url))
+	.onNodeHover((node) => {
+		hoveredNode = node
+	})
+	.autoPauseRedraw(false)
 
-// graph.d3Force("link")?.distance(60)
+graph.d3Force("link")?.distance(90)
+// graph.d3Force("link")?.strength(link => {
+//     console.log(link)
+//     return link.type === "import" ? 1 : 0
+// })
 // const clusters = Object.groupBy(data.nodes, (n) => n.dir)
 // console.log(clusters)
 // graph.d3Force('center', )

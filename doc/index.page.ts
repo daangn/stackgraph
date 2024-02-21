@@ -7,7 +7,7 @@ const header = /*md*/ `
 
 <div id="graph"></div>
 
-(StackGraph 저장소의 모든 변수 관계도, 붉은 선은 의존 관계, 회색 선은 디렉터리/파일 트리)
+(StackGraph 저장소의 모든 변수 관계도, 유색 선은 의존 관계, 무색 선은 디렉터리/파일 트리)
 
 `
 
