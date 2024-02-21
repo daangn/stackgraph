@@ -1,12 +1,13 @@
 import {
 	type ClassDeclaration,
 	type FunctionDeclaration,
+	type Node,
 	ReferencedSymbol,
 	ReferencedSymbolEntry,
-	type SourceFile,
 	SyntaxKind,
 	type VariableDeclaration,
 } from "../deps/ts_morph.ts"
+import { encodeVSCodeURI } from "./vscode_uri.ts"
 
 export type Declaration =
 	| VariableDeclaration
@@ -41,30 +42,27 @@ const getTopDecl = (ref: ReferencedSymbolEntry): Declaration | undefined => {
 	)
 }
 
+const equals = (a: Node, b: Node) => encodeVSCodeURI(a) === encodeVSCodeURI(b)
+
 /**
  * Find all references in other files
  *
- * TODO: also check for same file? (not neccesary for default exports)
  * TODO: use isDefinition()?
  */
-const getActualReferences =
-	(file: SourceFile) => (symbol: ReferencedSymbol): ReferencedSymbolEntry[] =>
-		symbol
-			.getReferences()
-			// .filter(ref => ref.getNode() !== symbol.getDefinition().getNode())
-			.filter((ref) => ref.getSourceFile().getFilePath() !== file.getFilePath())
-			.filter((ref) =>
-				ref.getNode().getParent()?.getKindName() !== "ImportClause"
-			)
+const getActualReferences = (
+	symbol: ReferencedSymbol,
+): ReferencedSymbolEntry[] =>
+	symbol
+		.getReferences()
+		.filter((ref) => !equals(ref.getNode(), symbol.getDefinition().getNode()))
+		.filter((ref) =>
+			ref.getNode().getParent()?.getKindName() !== "ImportClause"
+		)
 
-const getReferencedDecls = (node: Declaration): Declaration[] => {
-	const file = node.getSourceFile()
-	const varDecls = node.findReferences()
-		.flatMap(getActualReferences(file))
+const getReferencedDecls = (node: Declaration): Declaration[] =>
+	node.findReferences()
+		.flatMap(getActualReferences)
 		.flatMap((x) => getTopDecl(x) ?? [])
-
-	return varDecls
-}
 
 /**
  * Recursively query **direct** variable references into key-value map.
