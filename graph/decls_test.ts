@@ -1,10 +1,12 @@
 import type { Declaration } from "./decl_deps.ts"
 import { getDecls } from "./decls.ts"
-import { assertEquals } from "https://deno.land/std@0.216.0/assert/assert_equals.ts"
 import { declExampleText } from "./_example_project.ts"
 import { inMemoryProject } from "./_project.ts"
+import { assertSnapshot } from "../test_deps.ts"
+import { serializeNoColor } from "./_format.ts"
+import { snapshotTest } from "./_snapshot.ts"
 
-Deno.test("getInitialDecls() filters by declaration name", () => {
+snapshotTest("getInitialDecls() filters by declaration name", async (t) => {
 	const project = inMemoryProject()
 
 	const file = project.createSourceFile("a.ts", declExampleText())
@@ -13,16 +15,5 @@ Deno.test("getInitialDecls() filters by declaration name", () => {
 
 	const decls = getDecls(filter)([file]).map((x) => x.getName()).toArray()
 
-	const expected = [
-		"varVar",
-		"varLet",
-		"varConst",
-		"varArrowFn",
-		"functionFn",
-		"functionGen",
-		"functionAsync",
-		"functionAsyncGen",
-		"Class",
-	]
-	assertEquals(decls, expected)
+	await assertSnapshot(t, decls, { serializer: serializeNoColor })
 })

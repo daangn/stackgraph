@@ -1,4 +1,3 @@
-import { Reducer, Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
 import {
 	type ClassDeclaration,
 	type FunctionDeclaration,
@@ -8,7 +7,6 @@ import {
 	SyntaxKind,
 	type VariableDeclaration,
 } from "../deps/ts_morph.ts"
-import { encodeVSCodeURI, prettyPrintURI } from "./vscode_uri.ts"
 
 export type Declaration =
 	| VariableDeclaration
@@ -83,17 +81,3 @@ export const getDeclDeps = (links: Declaration[]): DeclDeps => {
 	}
 	return graph
 }
-
-export const asRecord =
-	<T extends string | number | symbol>(fn: (decl: Declaration) => T) =>
-	(declDeps: DeclDeps): Record<T, Set<T>> =>
-		Stream.from(declDeps.entries())
-			.map(([decl, deps]) => [fn(decl), new Set(deps.map(fn))] as [T, Set<T>])
-			.reduce(Reducer.toJSObject())
-
-export const declDepsSerializer = (declDeps: DeclDeps) =>
-	JSON.stringify(
-		asRecord((x) => prettyPrintURI(encodeVSCodeURI(x)))(declDeps),
-		(_, v) => v instanceof Set ? [...v] : v,
-		2,
-	)

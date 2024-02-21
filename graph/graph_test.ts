@@ -6,6 +6,8 @@ import { getAllDecls } from "./decls.ts"
 import { getDeclDeps } from "./decl_deps.ts"
 import { assertSnapshot } from "../test_deps.ts"
 import { parseVSCodeURI, prettyPrintURI } from "./vscode_uri.ts"
+import { serializeNoColor } from "./_format.ts"
+import { snapshotTest } from "./_snapshot.ts"
 
 const project = inMemoryProject()
 const files = withSrc(project)(exampleSrc)
@@ -39,8 +41,8 @@ const prettyPrintGraph = (graph: Graph) => {
 }
 
 export const graphSerializer = (graph: Graph) =>
-	JSON.stringify(prettyPrintGraph(graph), null, 2)
+	serializeNoColor(prettyPrintGraph(graph))
 
-Deno.test("declDepsToGraph() converts declDeps into valid graph", async (t) => {
+snapshotTest("declDepsToGraph() converts declDeps into valid graph", async (t) => {
 	await assertSnapshot(t, graph, { serializer: graphSerializer })
 })
