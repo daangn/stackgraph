@@ -23,7 +23,7 @@ export type Link = {
 	color: string
 	type: Type
 }
-type RawNode = Pick<Node, "name" | "path" | "id" | "type">
+type RawNode = Pick<Node, "line" | "name" | "path" | "id" | "type">
 export type Node = {
 	id: string
 	name: string
@@ -32,11 +32,11 @@ export type Node = {
 	path: string
 	dir: string
 	url: string
-	line?: string
+	line: string
 	type: Type
 }
 
-const linkNode = <const T extends { id: string; path: string; line?: string }>(
+const linkNode = <const T extends { id: string; path: string; line: string }>(
 	node: T,
 ) => {
 	const dir = dirname(node.path)
@@ -63,7 +63,7 @@ if (import.meta.main) {
 
 	const root = import.meta.dirname + "/../"
 	const files = project.addSourceFilesAtPaths(
-		import.meta.dirname + "/../**/*.ts",
+		import.meta.dirname + "/../graph/**/*_test.ts",
 	)
 
 	const decls = Stream.fromObjectValues(files).flatMap(getAllDecls).toArray()
@@ -114,6 +114,7 @@ if (import.meta.main) {
 				id: path,
 				name: path,
 				path,
+				line: "",
 				type: "path" as const,
 				color: "#bdbbbb48",
 				textColor: "#00000080",
@@ -126,12 +127,15 @@ if (import.meta.main) {
 		import.meta.dirname + "/assets/data.json",
 		JSON.stringify(
 			{
-				links: Stream.from(links, dirLinks).toArray(),
+				links: dirLinks,
+				imports: links,
+				// links: Stream.from(links, dirLinks).toArray(),
 				nodes: [
 					...nodes.map(linkNode).map(colorNode),
 					...dirNodes.map(linkNode),
 				],
-			} satisfies { links: Link[]; nodes: Node[] },
+			},
+			// satisfies { links: Link[]; nodes: Node[] },
 			null,
 			2,
 		),
