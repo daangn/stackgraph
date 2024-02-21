@@ -43,6 +43,9 @@ const prettyPrintGraph = (graph: Graph) => {
 export const graphSerializer = (graph: Graph) =>
 	serializeNoColor(prettyPrintGraph(graph))
 
-snapshotTest("declDepsToGraph() converts declDeps into valid graph", async (t) => {
-	await assertSnapshot(t, graph, { serializer: graphSerializer })
-})
+snapshotTest(
+	"declDepsToGraph() converts declDeps into valid graph",
+	async (t) => {
+		await assertSnapshot(t, graph, { serializer: graphSerializer })
+	},
+)
