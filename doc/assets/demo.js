@@ -29,10 +29,10 @@ const graph = ForceGraph()(graphDom)
 	.nodeAutoColorBy("path")
 	.linkAutoColorBy("color")
 	.nodeLabel("url")
-	.linkDirectionalArrowLength(6)
+	.linkDirectionalArrowLength((link) => link.type === "import" ? 5 : 2)
 	.linkWidth((link) => link.type === "import" ? 3 : 0.5)
 	.nodeCanvasObject((node, ctx, globalScale) => {
-		const label = /**@type{string}*/ (node.id)
+		const label = /**@type{string}*/ (node.name)
 		const fontSize = (node.type === "import" ? 20 : 16) / globalScale
 		ctx.font = `${fontSize}px Sans-Serif`
 		const textWidth = ctx.measureText(label).width
@@ -97,7 +97,10 @@ const graph = ForceGraph()(graphDom)
 	// @ts-ignore: node has url but force-graph lacks generics to know it
 	.onNodeClick((node) => globalThis.open(node.url))
 
-// graph.d3Force("link")?.distance(60)
+// graph.d3Force("link")?.strength(link => {
+//     console.log(link)
+//     return link.type === "import" ? 1 : 0
+// })
 // const clusters = Object.groupBy(data.nodes, (n) => n.dir)
 // console.log(clusters)
 // graph.d3Force('center', )

@@ -9,7 +9,7 @@ import { colors, hashRGB } from "../render/colors.ts"
 import { denoProjectOption } from "../utils/project.ts"
 import { ancestors } from "./ancestors.ts"
 import { declDepsToGraph, getAllDecls, getDeclDeps } from "../graph/mod.ts"
-import { parseVSCodeURI } from "../graph/vscode_uri.ts"
+import { encodeVSCodeURI } from "../graph/vscode_uri.ts"
 
 /**
  * Generate dependency map of **StackGraph** itself
@@ -23,30 +23,35 @@ export type Link = {
 	color: string
 	type: Type
 }
-type RawNode = Pick<Node, "path" | "id" | "type">
+type RawNode = Pick<Node, "name" | "path" | "id" | "type">
 export type Node = {
 	id: string
+	name: string
 	color: string
 	textColor: string
 	path: string
 	dir: string
 	url: string
+	line?: string
 	type: Type
 }
 
-const linkNode = <const T extends { id: string; path: string }>(node: T) => {
+const linkNode = <const T extends { id: string; path: string; line?: string }>(
+	node: T,
+) => {
 	const dir = dirname(node.path)
 
 	return {
 		...node,
 		dir,
-		url: `https://github.com/daangn/stackgraph/tree/main/${node.path}`,
+		url:
+			`https://github.com/daangn/stackgraph/tree/main/${node.path}${node.line}`,
 	}
 }
 
-const colorNode = <const T extends { dir: string }>(node: T) => ({
+const colorNode = <const T extends { path: string }>(node: T) => ({
 	...node,
-	...colors(hashRGB(node.dir)),
+	...colors(hashRGB(node.path)),
 })
 
 const distinctById = HashSet.createContext<RawNode>({
@@ -67,29 +72,38 @@ if (import.meta.main) {
 
 	const links: Link[] = graph.streamConnections()
 		.map(([source, target]) => ({
-			source: parseVSCodeURI(source).name!,
-			target: parseVSCodeURI(target).name!,
+			source,
+			target,
 			color: "#ff6e61",
 			type: "import",
 		} as const))
 		.toArray()
 
 	const nodes: RawNode[] = Array.from(declDeps.keys())
-		.map((node) => ({
-			id: node.getName()!,
-			path: relative(root, node.getSourceFile().getFilePath()),
-			type: "import" as const,
-		}))
+		.map((node) => {
+			const srcfile = node.getSourceFile()
+			const begin = node.getStartLineNumber()
+			const end = node.getEndLineNumber()
+
+			return {
+				id: encodeVSCodeURI(node),
+				name: node.getName()!,
+				path: relative(root, srcfile.getFilePath()),
+				line: `#L${begin}-L${end}`,
+				type: "import" as const,
+			}
+		})
 
 	const dirLinks = Stream.from(nodes)
 		.stream()
 		.flatMap((node) => {
-			const newLocal = Stream.from(ancestors(node.path)).append(node.id)
+			const links = Stream.from(ancestors(node.path)).append(node.id)
 				.window(2, { skipAmount: 1 })
 				.map(([target, source]) =>
 					({ source, target, color: "#dacaca", type: "path" }) as const
 				)
-			return newLocal
+
+			return links
 		})
 		.reduce(HashSet.reducer())
 		.toArray()
@@ -98,6 +112,7 @@ if (import.meta.main) {
 		.flatMap((node) =>
 			ancestors(node.path).map((path) => ({
 				id: path,
+				name: path,
 				path,
 				type: "path" as const,
 				color: "#bdbbbb48",
