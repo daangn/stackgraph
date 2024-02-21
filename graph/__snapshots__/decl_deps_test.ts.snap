@@ -1,24 +1,41 @@
 export const snapshot = {};
 
+snapshot[`getDeclDeps() searches (aliased) references for a 1`] = `
+{
+  AliasedImport: Set(0) {},
+  Comp: Set(1) {
+    "Page",
+  },
+  InnerImport: Set(0) {},
+  Page: Set(1) {
+    "InnerImport",
+  },
+  a: Set(2) {
+    "AliasedImport",
+    "Comp",
+  },
+}
+`;
+
 snapshot[`getDeclDeps() handles identical export names 1`] = `
 {
-  "a (/a.ts:2:22)": [
+  "AliasedImport (/d.tsx:6:22)": Set(0) {},
+  "Comp (/b.tsx:5:22)": Set(1) {
+    "Page (/c.tsx:8:22)",
+  },
+  "CompAAA (/b.tsx:6:22)": Set(0) {},
+  "InnerImport (/d.tsx:5:22)": Set(0) {},
+  "Page (/c.tsx:8:22)": Set(1) {
+    "InnerImport (/d.tsx:5:22)",
+  },
+  "Unrelated (/b.tsx:9:22)": Set(0) {},
+  "a (/a.ts:2:22)": Set(2) {
+    "AliasedImport (/d.tsx:6:22)",
     "Comp (/b.tsx:5:22)",
-    "AliasedImport (/d.tsx:6:22)"
-  ],
-  "aaa (/a.ts:4:19)": [
-    "CompAAA (/b.tsx:6:22)"
-  ],
-  "Comp (/b.tsx:5:22)": [
-    "Page (/c.tsx:8:22)"
-  ],
-  "CompAAA (/b.tsx:6:22)": [],
-  "Unrelated (/b.tsx:9:22)": [],
-  "a (/c.tsx:6:22)": [],
-  "Page (/c.tsx:8:22)": [
-    "InnerImport (/d.tsx:5:22)"
-  ],
-  "InnerImport (/d.tsx:5:22)": [],
-  "AliasedImport (/d.tsx:6:22)": []
+  },
+  "a (/c.tsx:6:22)": Set(0) {},
+  "aaa (/a.ts:4:19)": Set(1) {
+    "CompAAA (/b.tsx:6:22)",
+  },
 }
 `;

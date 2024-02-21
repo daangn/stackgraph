@@ -1,0 +1,15 @@
+export const snapshot = {};
+
+snapshot[`getInitialDecls() filters by declaration name 1`] = `
+[
+  "varVar",
+  "varLet",
+  "varConst",
+  "varArrowFn",
+  "functionFn",
+  "functionGen",
+  "functionAsync",
+  "functionAsyncGen",
+  "Class",
+]
+`;
