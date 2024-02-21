@@ -6,8 +6,7 @@
 		"serve": "deno task lume -s",
 		"test": "deno test --parallel", // TODO: also do doctests
 		"test:typeless": "deno task test --no-check",
-		"snapshot": "deno task test:typeless --allow-read",
-		"snapshot:update": "deno task snapshot --allow-write -- --update"
+		"snapshot": "deno task test:typeless --allow-read --allow-write"
 	},
 	"fmt": {
 		"semiColons": false,
