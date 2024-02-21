@@ -1,0 +1,25 @@
+import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { assertSnapshot } from "../test_deps.ts"
+import { exampleSrc } from "./_example_project.ts"
+import { inMemoryProject, withSrc } from "./_project.ts"
+import { getDeclDeps } from "./decl_deps.ts"
+import { getAllDecls } from "./decls.ts"
+import { declDepsToGraph } from "./graph.ts"
+import { graphToTopDeclDeps } from "./top_decl_deps.ts"
+import { snapshotTest } from "./_snapshot.ts"
+import { topDeclDepsSerializer } from "./_format.ts"
+
+snapshotTest(
+	"graphToTopDeclDeps() converts graph into valid TopDeclDeps",
+	async (t) => {
+		const project = inMemoryProject()
+		const files = withSrc(project)(exampleSrc)
+		const decls = Stream.fromObjectValues(files).flatMap(getAllDecls).toArray()
+		const declDeps = getDeclDeps(decls)
+		const graph = declDepsToGraph(declDeps)
+
+		const topDeclDeps = graphToTopDeclDeps(graph)
+
+		await assertSnapshot(t, topDeclDeps, { serializer: topDeclDepsSerializer })
+	},
+)
