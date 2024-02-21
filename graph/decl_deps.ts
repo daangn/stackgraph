@@ -36,7 +36,8 @@ const getTopDecl = (ref: ReferencedSymbolEntry): Declaration | undefined => {
 
 	return target.findLast((x): x is Declaration =>
 		x.isKind(SyntaxKind.VariableDeclaration) ||
-		x.isKind(SyntaxKind.ClassDeclaration)
+		x.isKind(SyntaxKind.ClassDeclaration) ||
+		x.isKind(SyntaxKind.FunctionDeclaration)
 	)
 }
 
