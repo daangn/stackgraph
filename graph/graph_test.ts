@@ -45,7 +45,5 @@ export const graphSerializer = (graph: Graph) =>
 
 snapshotTest(
 	"declDepsToGraph() converts declDeps into valid graph",
-	async (t) => {
-		await assertSnapshot(t, graph, { serializer: graphSerializer })
-	},
+	(t) => assertSnapshot(t, graph, { serializer: graphSerializer }),
 )
