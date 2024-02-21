@@ -4,8 +4,9 @@ snapshot[`declDepsToGraph() converts declDeps into valid graph 1`] = `
 {
   "/a.ts": {
     "a (/a.ts:2:22)": [
-      "Comp (/b.tsx:5:22)",
       "AliasedImport (/d.tsx:6:22)",
+      "Comp (/b.tsx:5:22)",
+      "aaa (/a.ts:4:19)",
     ],
     "aaa (/a.ts:4:19)": [
       "CompAAA (/b.tsx:6:22)",

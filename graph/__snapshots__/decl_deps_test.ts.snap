@@ -6,13 +6,18 @@ snapshot[`getDeclDeps() searches (aliased) references for a 1`] = `
   Comp: Set(1) {
     "Page",
   },
+  CompAAA: Set(0) {},
   InnerImport: Set(0) {},
   Page: Set(1) {
     "InnerImport",
   },
-  a: Set(2) {
+  a: Set(3) {
     "AliasedImport",
     "Comp",
+    "aaa",
+  },
+  aaa: Set(1) {
+    "CompAAA",
   },
 }
 `;
@@ -29,9 +34,10 @@ snapshot[`getDeclDeps() handles identical export names 1`] = `
     "InnerImport (/d.tsx:5:22)",
   },
   "Unrelated (/b.tsx:9:22)": Set(0) {},
-  "a (/a.ts:2:22)": Set(2) {
+  "a (/a.ts:2:22)": Set(3) {
     "AliasedImport (/d.tsx:6:22)",
     "Comp (/b.tsx:5:22)",
+    "aaa (/a.ts:4:19)",
   },
   "a (/c.tsx:6:22)": Set(0) {},
   "aaa (/a.ts:4:19)": Set(1) {
