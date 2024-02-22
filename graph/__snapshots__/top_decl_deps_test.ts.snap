@@ -1,6 +1,6 @@
 export const snapshot = {};
 
-snapshot[`graphToTopDeclDeps() converts graph into valid TopDeclDeps 1`] = `
+snapshot[`getTopDeclDeps() converts graph into valid TopDeclDeps 1`] = `
 {
   "AliasedImport (/d.tsx:6:22)": [
     "a (/a.ts:2:22)",

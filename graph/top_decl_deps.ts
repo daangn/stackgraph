@@ -22,5 +22,5 @@ export type TopDeclDeps = Map<VSCodeURI, Set<VSCodeURI>>
  * TOP2 <- B, a, c
  * ```
  */
-export const graphToTopDeclDeps = (graph: Graph): TopDeclDeps =>
+export const getTopDeclDeps = (graph: Graph): TopDeclDeps =>
 	graphDescendants(graph)

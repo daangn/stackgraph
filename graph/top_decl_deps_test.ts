@@ -5,12 +5,12 @@ import { inMemoryProject, withSrc } from "./_project.ts"
 import { getDeclDeps } from "./decl_deps.ts"
 import { getAllDecls } from "./decls.ts"
 import { declDepsToGraph } from "./graph.ts"
-import { graphToTopDeclDeps } from "./top_decl_deps.ts"
+import { getTopDeclDeps } from "./top_decl_deps.ts"
 import { snapshotTest } from "./_snapshot.ts"
 import { topDeclDepsSerializer } from "./_format.ts"
 
 snapshotTest(
-	"graphToTopDeclDeps() converts graph into valid TopDeclDeps",
+	"getTopDeclDeps() converts graph into valid TopDeclDeps",
 	async (t) => {
 		const project = inMemoryProject()
 		const files = withSrc(project)(exampleSrc)
@@ -18,7 +18,7 @@ snapshotTest(
 		const declDeps = getDeclDeps(decls)
 		const graph = declDepsToGraph(declDeps)
 
-		const topDeclDeps = graphToTopDeclDeps(graph)
+		const topDeclDeps = getTopDeclDeps(graph)
 
 		await assertSnapshot(t, topDeclDeps, { serializer: topDeclDepsSerializer })
 	},
