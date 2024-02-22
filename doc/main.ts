@@ -49,7 +49,7 @@ const linkNode = <const T extends { id: string; path: string; line: string }>(
 	}
 }
 
-const colorNode = <const T extends { path: string }>(node: T) => ({
+export const colorNode = <const T extends { path: string }>(node: T) => ({
 	...node,
 	...colors(hashRGB(node.path)),
 })
