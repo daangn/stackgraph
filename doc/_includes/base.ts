@@ -1,4 +1,4 @@
-export default ({ content, title, search }: Lume.Data, {}: Lume.Helpers) => {
+export default ({ content, title }: Lume.Data, {}: Lume.Helpers) => {
 	// console.log("pages:", search.pages())
 
 	return /*html*/ `

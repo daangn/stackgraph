@@ -70,13 +70,8 @@ if (import.meta.main) {
 	const declDeps = getDeclDeps(decls)
 	const graph = declDepsToGraph(declDeps)
 
-	const links: Link[] = graph.streamConnections()
-		.map(([source, target]) => ({
-			source,
-			target,
-			color: "#ff6e61",
-			type: "import",
-		} as const))
+	const links = graph.streamConnections()
+		.map(([source, target]) => ({ source, target } as const))
 		.toArray()
 
 	const nodes: RawNode[] = Array.from(declDeps.keys())
