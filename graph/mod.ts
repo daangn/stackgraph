@@ -1,8 +1,8 @@
 // deno-lint-ignore-file no-unused-vars
 import type { getDecls } from "./decls.ts"
 import type { DeclDeps, getDeclDeps } from "./decl_deps.ts"
-import type { declDepsToGraph, Graph } from "./graph.ts"
-import type { graphToTopDeclDeps, TopDeclDeps } from "./top_decl_deps.ts"
+import type { declDepsToGraph, getGraph, Graph } from "./graph.ts"
+import type { getTopDeclDeps, TopDeclDeps } from "./top_decl_deps.ts"
 
 /**
  * @module
@@ -36,10 +36,11 @@ import type { graphToTopDeclDeps, TopDeclDeps } from "./top_decl_deps.ts"
  * ### Getting `graph`
  *
  * generate {@link Graph} using {@link declDepsToGraph}
+ * or use shortcut {@link getGraph}
  *
  * ### Getting `top decl deps`
  *
- * generate {@link TopDeclDeps} using {@link graphToTopDeclDeps}
+ * generate {@link TopDeclDeps} using {@link getTopDeclDeps}
  */
 
 export * from "./decls.ts"
