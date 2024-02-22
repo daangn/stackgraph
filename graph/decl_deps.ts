@@ -1,3 +1,4 @@
+import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
 import {
 	type ClassDeclaration,
 	type FunctionDeclaration,
@@ -25,7 +26,9 @@ export type DeclDeps = Map<Declaration, Declaration[]>
  * RFC: only track top-level declarations or inside if statements?
  * FIXME: also track `function` statements, are there other types of declarations?
  */
-const getTopDecl = (ref: ReferencedSymbolEntry): Declaration | undefined => {
+export const getTopDecl = (
+	ref: ReferencedSymbolEntry,
+): Declaration | undefined => {
 	const target = ref.getNode().getAncestors()
 
 	// 	.at(-2) // HACK: last is SourceFile, second to last is the variable/class declaration
@@ -42,38 +45,34 @@ const getTopDecl = (ref: ReferencedSymbolEntry): Declaration | undefined => {
 	)
 }
 
-const equals = (a: Node, b: Node) => encodeVSCodeURI(a) === encodeVSCodeURI(b)
+export const equals = (a: Node, b: Node) =>
+	encodeVSCodeURI(a) === encodeVSCodeURI(b)
 
-/**
- * Find all references in other files
- *
- * TODO: use isDefinition()?
- */
-const getActualReferences = (
+export const getActualReferences = (
 	symbol: ReferencedSymbol,
-): ReferencedSymbolEntry[] =>
-	symbol
-		.getReferences()
+): Stream<ReferencedSymbolEntry> =>
+	Stream.from(symbol
+		.getReferences())
 		.filter((ref) => !equals(ref.getNode(), symbol.getDefinition().getNode()))
 		.filter((ref) =>
 			ref.getNode().getParent()?.getKindName() !== "ImportClause"
 		)
 
-const getReferencedDecls = (node: Declaration): Declaration[] =>
-	node.findReferences()
+export const getReferencedDecls = (
+	node: Declaration,
+): Stream<Declaration> =>
+	Stream.from(node.findReferences())
 		.flatMap(getActualReferences)
-		.flatMap((x) => getTopDecl(x) ?? [])
+		.map((x) => getTopDecl(x))
+		.filter((x): x is Declaration => x !== undefined)
 
-/**
- * Recursively query **direct** variable references into key-value map.
- */
 export const getDeclDeps = (links: Declaration[]): DeclDeps => {
 	const graph: DeclDeps = new Map()
 
 	let current = links
 	while (current.length > 0) {
 		current = current.flatMap((node) => {
-			const references = getReferencedDecls(node)
+			const references = getReferencedDecls(node).toArray()
 			graph.set(node, references)
 			return references
 		})
