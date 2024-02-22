@@ -63,7 +63,7 @@ if (import.meta.main) {
 
 	const root = import.meta.dirname + "/../"
 	const files = project.addSourceFilesAtPaths(
-		import.meta.dirname + "/../graph/**/*_test.ts",
+		import.meta.dirname + "/../**/*.ts",
 	)
 
 	const decls = Stream.fromObjectValues(files).flatMap(getAllDecls).toArray()

@@ -20,7 +20,8 @@ export default async (_: Lume.Data, { md }: Lume.Helpers) => /*html*/ `
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/github.min.css" />
         <style>
             body {
-                margin-inline: 20vw;
+                max-width: 1200px;
+                margin-inline: auto;
             }
             blockquote {
                 background-color: #f2e8da;

@@ -24,6 +24,7 @@ const imports = Object.fromEntries(
 		) => [k, v.map((x) => data.nodes.find((node) => node.id === x.target))]),
 )
 
+/** @type {import("https://esm.sh/force-graph@1.43.4").NodeObject | undefined} */
 let hoveredNode
 
 // console.log(imports)
@@ -42,13 +43,13 @@ const graph = ForceGraph()(graphDom)
 	.linkDirectionalArrowLength(3)
 	.linkWidth(0.5)
 	.nodeCanvasObject((node, ctx, globalScale) => {
-		ctx.globalAlpha = hoveredNode
-			? ((hoveredNode === node || imports[hoveredNode.id]?.includes(node))
-				? 1
-				: 0.1)
-			: 1
+		const state = hoveredNode
+			? (hoveredNode === node || imports[hoveredNode.id]?.includes(node))
+				? "highlighted"
+				: "hidden"
+			: "normal"
 
-		const label = /**@type{string}*/ (node.name)
+		const label = /**@type {string}*/ (node.name)
 		const fontSize = (node.type === "import" ? 20 : 16) / globalScale
 		ctx.font = `${fontSize}px Sans-Serif`
 		const textWidth = ctx.measureText(label).width
@@ -58,9 +59,31 @@ const graph = ForceGraph()(graphDom)
 
 		const bgWidth = scaleBg(textWidth)
 		const bgHeight = scaleBg(fontSize)
+		// @ts-ignore: to re-use in nodePointerAreaPaint
+		node.bgWidth = bgWidth
+		// @ts-ignore: to re-use in nodePointerAreaPaint
+		node.bgHeight = bgHeight
 
 		// @ts-ignore: node do has color but force-graph lacks generics to know it
 		ctx.fillStyle = node.color
+
+		ctx.globalAlpha = 1
+		if (state === "hidden") {
+			ctx.globalAlpha = 0.2
+			ctx.beginPath()
+			ctx.arc(
+				// @ts-ignore: node do has x and y but force-graph marks it optional
+				node.x,
+				// @ts-ignore: node do has x and y but force-graph marks it optional
+				node.y,
+				5 / globalScale,
+				0,
+				2 * Math.PI,
+			)
+			ctx.fill()
+			ctx.closePath()
+			return
+		}
 
 		if (node.type === "import") {
 			ctx.fillRect(
@@ -92,17 +115,13 @@ const graph = ForceGraph()(graphDom)
 		// @ts-ignore: node do has x and y but force-graph marks it optional
 		ctx.fillText(label, node.x, node.y)
 
-		// @ts-ignore: to re-use in nodePointerAreaPaint
-		node.bgWidth = bgWidth
-		// @ts-ignore: to re-use in nodePointerAreaPaint
-		node.bgHeight = bgHeight
-
 		// if (hoveredNode === node) {
 		{
+			if (state === "hidden") return
 			ctx.save()
-			ctx.globalAlpha = (hoveredNode === node) ? 1 : 0.25
-			ctx.lineWidth = (hoveredNode === node) ? 3 : 1
-			const arrowLength = (hoveredNode === node) ? 24 : 6
+			ctx.globalAlpha = (hoveredNode === node) ? 1 : 0.5
+			ctx.lineWidth = ((hoveredNode === node) ? 3 : 1) / globalScale
+			const arrowLength = ((hoveredNode === node) ? 24 : 6) / globalScale
 			const arrowRelPos = 0.5
 			const arrowColor = node.color // "rgba(241, 21, 21, 0.521)"
 			const arrowHalfWidth = arrowLength / ARROW_WH_RATIO / 2
@@ -208,7 +227,11 @@ const graph = ForceGraph()(graphDom)
 	})
 	.autoPauseRedraw(false)
 
-graph.d3Force("link")?.distance(90)
+globalThis.addEventListener("resize", () => {
+	graph.width(graphDom.clientWidth).height(graphDom.clientHeight)
+	console.log(graphDom.clientWidth)
+})
+
 // graph.d3Force("link")?.strength(link => {
 //     console.log(link)
 //     return link.type === "import" ? 1 : 0
