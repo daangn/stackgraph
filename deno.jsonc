@@ -1,5 +1,10 @@
 {
-	"exclude": ["render/assets", "_site", "__snapshots__"],
+	"exclude": [
+		"doc/assets/data",
+		"render/assets",
+		"_site",
+		"__snapshots__"
+	],
 	"tasks": {
 		"lume": "echo \"import 'lume/cli.ts'\" | deno run --unstable -A -",
 		"build": "deno task lume",

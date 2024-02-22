@@ -16,7 +16,7 @@ import ForceGraph from "https://esm.sh/force-graph@1.43.4"
 const graphDom = document.querySelector("div#graph")
 if (!graphDom) throw new Error("graph dom not found")
 
-const data = await fetch("./assets/data.json").then((res) => res.json())
+const data = await fetch("./assets/data/index.json").then((res) => res.json())
 const imports = Object.fromEntries(
 	Object.entries(Object.groupBy(data.imports, (x) => x.source))
 		.map((

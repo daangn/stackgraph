@@ -119,7 +119,7 @@ if (import.meta.main) {
 		.toArray()
 
 	await Deno.writeTextFile(
-		import.meta.dirname + "/assets/data.json",
+		import.meta.dirname + "/assets/data/index.json",
 		JSON.stringify(
 			{
 				links: dirLinks,
