@@ -1,0 +1,32 @@
+body {
+    max-width: 1200px;
+    margin-inline: auto;
+}
+
+blockquote {
+    background-color: #f2e8da;
+    padding: 0.5em 1em;
+}
+
+pre {
+    border: 1px solid #e1e4e8;
+}
+
+code {
+    background-color: #dff4e6;
+}
+
+#graph {
+    height: 60vh;
+    background-color: #f7fafc;
+}
+
+nav a {
+    font-size: 1.5em;
+}
+
+h2,
+h3,
+ul {
+    margin: 0.2em 0
+}
