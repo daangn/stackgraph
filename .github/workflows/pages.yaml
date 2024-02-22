@@ -22,8 +22,8 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v4
 
-      - name: Cache Deno dependencies
-        uses: actions/cache@v4
+      - name: Load Deno Dependencies
+        uses: actions/cache/restore@v4
         with:
           path: ${{ env.DENO_DIR }}
           key: ${{ hashFiles('deno.lock') }}
