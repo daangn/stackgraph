@@ -1,4 +1,5 @@
 body {
+    padding-inline: 1em;
     max-width: 1200px;
     margin-inline: auto;
 }
@@ -21,8 +22,14 @@ code {
     background-color: #f7fafc;
 }
 
+nav {
+    display: flex;
+    gap: 0.8em;
+    flex-wrap: wrap;
+}
+
 nav a {
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
 h2,

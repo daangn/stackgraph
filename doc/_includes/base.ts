@@ -1,5 +1,6 @@
-export default ({ content, title }: Lume.Data, {}: Lume.Helpers) => {
-	// console.log("pages:", search.pages())
+export default ({ content, title, search }: Lume.Data, {}: Lume.Helpers) => {
+	const nav = search.pages()
+		.map((x) => /*html*/ `<a href="${x.url}">${x.title}</a>`).join("\n")
 
 	return /*html*/ `
     <!DOCTYPE html>
@@ -15,9 +16,7 @@ export default ({ content, title }: Lume.Data, {}: Lume.Helpers) => {
             <h1>
                 <a href="https://github.com/daangn/stackgraph">StackGraph</a>
             </h1>
-            <nav>
-                <a href="/">Home</a>
-            </nav>
+            <nav>${nav}</nav>
         </header>
         <hr />
         ${content}
