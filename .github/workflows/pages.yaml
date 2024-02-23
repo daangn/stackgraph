@@ -28,13 +28,13 @@ jobs:
           path: ${{ env.DENO_DIR }}
           key: ${{ hashFiles('deno.lock') }}
 
-      - name: Cache Deno dependencies
-        run: deno cache ./**/*.ts https://deno.land/x/lume@v2.0.3/cli.ts
-
       - name: Setup Deno environment
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
+
+      - name: Cache Deno dependencies
+        run: deno cache ./**/*.ts https://deno.land/x/lume@v2.0.3/cli.ts
 
       - name: Build site
         run: |
