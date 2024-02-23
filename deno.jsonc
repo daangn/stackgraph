@@ -28,6 +28,6 @@
 	},
 	"imports": {
 		"lume/": "https://deno.land/x/lume@v2.0.3/",
-        "https://raw.githubusercontent.com/daangn/stackgraph/main/": "./"
+		"https://raw.githubusercontent.com/daangn/stackgraph/main/": "./"
 	}
 }
