@@ -9,7 +9,7 @@ export default (
 	{ content, title, search, head }: Lume.Data,
 	{}: Lume.Helpers,
 ) => {
-	const nav = search.pages()
+	const nav = search.pages("category!=index")
 		.map((x) => /*html*/ `<a href="${x.url}">${x.title}</a>`).join("\n")
 
 	return /*html*/ `
@@ -27,7 +27,10 @@ export default (
             <h1>
                 <a href="https://github.com/daangn/stackgraph">StackGraph</a>
             </h1>
-            <nav>${nav}</nav>
+            <nav>
+                <a href="/index.html">StackGraph란</a>
+                ${nav}
+            </nav>
         </header>
         <hr />
         ${content}

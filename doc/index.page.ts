@@ -1,3 +1,4 @@
+export const category = "index"
 export const title = "StackGraph란"
 
 const readme = () =>
