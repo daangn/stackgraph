@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Load Deno Dependencies
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: ${{ env.DENO_DIR }}
           key: ${{ hashFiles('deno.lock') }}
@@ -29,8 +29,6 @@ jobs:
         run: deno lint
       - name: Check formatting
         run: deno fmt --check
-      - name: Cache Deno dependencies
-        run: deno cache ./**/*.ts
 
   test:
     runs-on: ubuntu-latest
