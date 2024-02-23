@@ -1,7 +1,4 @@
 // deno-lint-ignore-file
-/// <reference types="../render/main.d.ts" />
-/// <reference lib="deno.window" />
-/// <reference lib="dom" />
 
 import ForceGraph from "https://esm.sh/force-graph@1.43.4"
 
@@ -16,57 +13,37 @@ const Graph = ForceGraph()(graphDom)
 	.nodeId("uri")
 	.nodeLabel("fullPath")
 	.linkDirectionalArrowLength(4)
+	// 컴포넌트명을 노드에 표시
 	.nodeCanvasObject((node, ctx, globalScale) => {
-		const label = /**@type {string}*/ (node.name)
+		const label = node.name
 		const fontSize = 16 / globalScale
 		ctx.font = `${fontSize}px Sans-Serif`
-		const textWidth = ctx.measureText(label).width
 
-		/** @type {(n: number) => number} */
-		const scaleBg = (n) => n + fontSize * 0.2
+		const bgWidth = ctx.measureText(label).width + fontSize * 0.2
+		const bgHeight = fontSize * 1.2
 
-		const bgWidth = scaleBg(textWidth)
-		const bgHeight = scaleBg(fontSize)
-		// @ts-ignore: to re-use in nodePointerAreaPaint
-		node.bgWidth = bgWidth
-		// @ts-ignore: to re-use in nodePointerAreaPaint
-		node.bgHeight = bgHeight
-
-		// @ts-ignore: node do has color but force-graph lacks generics to know it
 		ctx.fillStyle = node.color
-
-		ctx.globalAlpha = 1
-
-		ctx.fillRect(
-			// @ts-ignore: node do has x and y but force-graph marks it optional
-			node.x - bgWidth / 2,
-			// @ts-ignore: node do has x and y but force-graph marks it optional
-			node.y - bgHeight / 2,
-			bgWidth,
-			bgHeight,
-		)
+		ctx.fillRect(node.x - bgWidth / 2, node.y - bgHeight / 2, bgWidth, bgHeight)
 
 		ctx.textAlign = "center"
 		ctx.textBaseline = "middle"
-		// @ts-ignore: node do has textColor but force-graph lacks generics to know it
 		ctx.fillStyle = node.textColor
-		// @ts-ignore: node do has x and y but force-graph marks it optional
 		ctx.fillText(label, node.x, node.y)
+
+		node.bgWidth = bgWidth
+		node.bgHeight = bgHeight
 	})
 	.nodePointerAreaPaint((node, color, ctx) => {
 		ctx.fillStyle = color
 		ctx.fillRect(
-			// @ts-ignore: node do has x and y but force-graph marks it optional
 			node.x - node.bgWidth / 2,
-			// @ts-ignore: node do has x and y but force-graph marks it optional
 			node.y - node.bgHeight / 2,
-			// @ts-ignore: using bgWidth
 			node.bgWidth,
-			// @ts-ignore: using bgHeight
 			node.bgHeight,
 		)
 	})
 
+// 화면 크기에 맞춰 그래프 크기 조정
 Graph.width(graphDom.clientWidth).height(graphDom.clientHeight)
 globalThis.addEventListener("resize", () => {
 	Graph.width(graphDom.clientWidth).height(graphDom.clientHeight)
