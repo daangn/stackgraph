@@ -1,5 +1,6 @@
 import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
 import { inMemoryProject } from "./_project.ts"
+import outdent from "https://deno.land/x/outdent@v0.8.0/mod.ts"
 
 /**
  * https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements
@@ -55,12 +56,12 @@ export const getDeclExampleFile = (amount: number) => {
 }
 
 export const exampleSrc = {
-	"a.ts": /*javascript*/ `
+	"a.ts": outdent /*javascript*/`
         export const a = "a"
 
-	    export const aaa = () => a
-	`,
-	"b.tsx": /*javascript*/ `
+        export const aaa = () => a
+    `,
+	"b.tsx": outdent /*javascript*/`
         import { a, aaa } from "./a.ts"
         export { a as exportedA }
 
@@ -70,20 +71,23 @@ export const exampleSrc = {
         // unrelated to a and should be ignored
         export const Unrelated = () => <div>Unrelated</div>
     `,
-	"c.tsx": /*javascript*/ `
+	"c.tsx": outdent /*javascript*/`
         import { Comp } from "./b.tsx"
 
         // a variable of same name is in a.ts but
-        // shoudl be treated as different variable
+        // should be treated as different variable
         export const a = "1234"
 
         export const Page = () => <div><Comp/></div>
     `,
-	"d.tsx": /*javascript*/ `
-        import { exportedA } from "./b.tsx"
+	"d.tsx": outdent /*javascript*/`
+        import { exportedA, Unrelated } from "./b.tsx"
         import { Page } from "./c.tsx"
 
-        export const InnerImport = () => <Page/>
+        export const InnerImport = () => <>
+                <Page/>
+                <Unrelated/>
+            </>
         export const AliasedImport = () => <div>{exportedA}</div>
     `,
 }

@@ -1,5 +1,10 @@
 {
-	"exclude": ["render/assets", "_site", "__snapshots__"],
+	"exclude": [
+		"doc/assets/data",
+		"render/assets",
+		"_site",
+		"__snapshots__"
+	],
 	"tasks": {
 		"lume": "echo \"import 'lume/cli.ts'\" | deno run --unstable -A -",
 		"build": "deno task lume",
@@ -22,6 +27,7 @@
 		"types": ["./render/main.d.ts", "lume/types.ts"]
 	},
 	"imports": {
-		"lume/": "https://deno.land/x/lume@v2.0.3/"
+		"lume/": "https://deno.land/x/lume@v2.0.3/",
+		"https://raw.githubusercontent.com/daangn/stackgraph/main/": "./"
 	}
 }
