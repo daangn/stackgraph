@@ -24,7 +24,7 @@ snapshot[`getDeclDeps() searches (aliased) references for a 1`] = `
 
 snapshot[`getDeclDeps() handles identical export names 1`] = `
 {
-  "AliasedImport (/d.tsx:5:14)": Set(0) {},
+  "AliasedImport (/d.tsx:8:14)": Set(0) {},
   "Comp (/b.tsx:4:14)": Set(1) {
     "Page (/c.tsx:7:14)",
   },
@@ -33,9 +33,11 @@ snapshot[`getDeclDeps() handles identical export names 1`] = `
   "Page (/c.tsx:7:14)": Set(1) {
     "InnerImport (/d.tsx:4:14)",
   },
-  "Unrelated (/b.tsx:8:14)": Set(0) {},
+  "Unrelated (/b.tsx:8:14)": Set(1) {
+    "InnerImport (/d.tsx:4:14)",
+  },
   "a (/a.ts:1:14)": Set(3) {
-    "AliasedImport (/d.tsx:5:14)",
+    "AliasedImport (/d.tsx:8:14)",
     "Comp (/b.tsx:4:14)",
     "aaa (/a.ts:3:14)",
   },

@@ -75,16 +75,19 @@ export const exampleSrc = {
         import { Comp } from "./b.tsx"
 
         // a variable of same name is in a.ts but
-        // shoudl be treated as different variable
+        // should be treated as different variable
         export const a = "1234"
 
         export const Page = () => <div><Comp/></div>
     `,
 	"d.tsx": outdent /*javascript*/`
-        import { exportedA } from "./b.tsx"
+        import { exportedA, Unrelated } from "./b.tsx"
         import { Page } from "./c.tsx"
 
-        export const InnerImport = () => <Page/>
+        export const InnerImport = () => <>
+                <Page/>
+                <Unrelated/>
+            </>
         export const AliasedImport = () => <div>{exportedA}</div>
     `,
 }
