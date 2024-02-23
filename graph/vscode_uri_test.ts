@@ -27,7 +27,7 @@ const aURI = encodeVSCodeURI(aDecl)
 
 Deno.test("encodeVSCodeURI() encodes to valid URL", () => {
 	const expected = new URL(
-		"vscode://file/a.ts:2:22?kind=VariableDeclaration&name=a",
+		"vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a",
 	)
 
 	assertEquals(new URL(aURI), expected)

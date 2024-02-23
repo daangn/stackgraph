@@ -3,29 +3,29 @@ export const snapshot = {};
 snapshot[`declDepsToGraph() converts declDeps into valid graph 1`] = `
 {
   "/a.ts": {
-    "a (/a.ts:2:22)": [
-      "AliasedImport (/d.tsx:6:22)",
-      "Comp (/b.tsx:5:22)",
-      "aaa (/a.ts:4:19)",
+    "a (/a.ts:1:14)": [
+      "AliasedImport (/d.tsx:5:14)",
+      "aaa (/a.ts:3:14)",
+      "Comp (/b.tsx:4:14)",
     ],
-    "aaa (/a.ts:4:19)": [
-      "CompAAA (/b.tsx:6:22)",
+    "aaa (/a.ts:3:14)": [
+      "CompAAA (/b.tsx:5:14)",
     ],
   },
   "/b.tsx": {
-    "Comp (/b.tsx:5:22)": [
-      "Page (/c.tsx:8:22)",
+    "Comp (/b.tsx:4:14)": [
+      "Page (/c.tsx:7:14)",
     ],
-    "CompAAA (/b.tsx:6:22)": [],
+    "CompAAA (/b.tsx:5:14)": [],
   },
   "/c.tsx": {
-    "Page (/c.tsx:8:22)": [
-      "InnerImport (/d.tsx:5:22)",
+    "Page (/c.tsx:7:14)": [
+      "InnerImport (/d.tsx:4:14)",
     ],
   },
   "/d.tsx": {
-    "AliasedImport (/d.tsx:6:22)": [],
-    "InnerImport (/d.tsx:5:22)": [],
+    "AliasedImport (/d.tsx:5:14)": [],
+    "InnerImport (/d.tsx:4:14)": [],
   },
 }
 `;
