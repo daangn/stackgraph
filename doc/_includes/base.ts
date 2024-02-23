@@ -1,4 +1,14 @@
-export default ({ content, title, search }: Lume.Data, {}: Lume.Helpers) => {
+declare global {
+	namespace Lume {
+		export interface Data {
+			head?: string
+		}
+	}
+}
+export default (
+	{ content, title, search, head }: Lume.Data,
+	{}: Lume.Helpers,
+) => {
 	const nav = search.pages()
 		.map((x) => /*html*/ `<a href="${x.url}">${x.title}</a>`).join("\n")
 
@@ -10,6 +20,7 @@ export default ({ content, title, search }: Lume.Data, {}: Lume.Helpers) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="/assets/style.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.6.0/build/styles/github.min.css" />
+        ${head ?? ""}
     </head>
     <body>
         <header>

@@ -36,6 +36,7 @@ jobs:
       - name: Build site
         run: |
           deno run -A doc/main.ts
+          deno run -A doc/components.ts
           deno task build
 
       - name: Setup Pages
