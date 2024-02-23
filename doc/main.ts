@@ -7,7 +7,7 @@ import { Project } from "../deps/ts_morph.ts"
 
 import { colors, hashRGB } from "../render/colors.ts"
 import { denoProjectOption } from "../utils/project.ts"
-import { ancestors } from "./ancestors.ts"
+import { ancestors } from "../utils/ancestors.ts"
 import { declDepsToGraph, getAllDecls, getDeclDeps } from "../graph/mod.ts"
 import { encodeVSCodeURI } from "../graph/vscode_uri.ts"
 
