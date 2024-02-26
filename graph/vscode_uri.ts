@@ -23,6 +23,7 @@ export const encodeVSCodeURI = (node: Node): VSCodeURI => {
 
 	const searchParams = new URLSearchParams({ kind: node.getKindName() })
 	if (Node.hasName(node)) searchParams.set("name", node.getName())
+	const hash = `L${node.getStartLineNumber()}-L${node.getEndLineNumber()}`
 
 	// console.log(node.getStart(), node.getText(), {
 	// 	line,
@@ -30,7 +31,7 @@ export const encodeVSCodeURI = (node: Node): VSCodeURI => {
 	// 	kind: node.getKindName(),
 	// })
 
-	return `vscode://file/${path}:${line}:${column}?${searchParams}`
+	return `vscode://file/${path}:${line}:${column}?${searchParams}#${hash}`
 }
 
 /**
