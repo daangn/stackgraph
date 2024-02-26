@@ -2,18 +2,18 @@ export const snapshot = {};
 
 snapshot[`getTopDeclDeps() converts graph into valid TopDeclDeps 1`] = `
 {
-  "vscode://file/b.tsx:5:14?kind=VariableDeclaration&name=CompAAA": [
-    "vscode://file/a.ts:3:14?kind=VariableDeclaration&name=aaa",
-    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a",
+  "vscode://file/b.tsx:5:14?kind=VariableDeclaration&name=CompAAA#L5-L5": [
+    "vscode://file/a.ts:3:14?kind=VariableDeclaration&name=aaa#L3-L3",
+    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a#L1-L1",
   ],
-  "vscode://file/d.tsx:4:14?kind=VariableDeclaration&name=InnerImport": [
-    "vscode://file/b.tsx:4:14?kind=VariableDeclaration&name=Comp",
-    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a",
-    "vscode://file/c.tsx:7:14?kind=VariableDeclaration&name=Page",
-    "vscode://file/b.tsx:8:14?kind=VariableDeclaration&name=Unrelated",
+  "vscode://file/d.tsx:4:14?kind=VariableDeclaration&name=InnerImport#L4-L7": [
+    "vscode://file/c.tsx:7:14?kind=VariableDeclaration&name=Page#L7-L7",
+    "vscode://file/b.tsx:4:14?kind=VariableDeclaration&name=Comp#L4-L4",
+    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a#L1-L1",
+    "vscode://file/b.tsx:8:14?kind=VariableDeclaration&name=Unrelated#L8-L8",
   ],
-  "vscode://file/d.tsx:8:14?kind=VariableDeclaration&name=AliasedImport": [
-    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a",
+  "vscode://file/d.tsx:8:14?kind=VariableDeclaration&name=AliasedImport#L8-L8": [
+    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a#L1-L1",
   ],
 }
 `;
