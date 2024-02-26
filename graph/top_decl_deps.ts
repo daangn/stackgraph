@@ -3,7 +3,7 @@ import type { Graph } from "./graph.ts"
 import { VSCodeURI } from "./vscode_uri.ts"
 import { graphDescendants } from "./graph_descendants.ts"
 
-export type TopDeclDeps = Map<VSCodeURI, Set<VSCodeURI>>
+export type TopDeclDeps = Record<VSCodeURI, VSCodeURI[]>
 
 /**
  * Flattens graph of references into top-level links.

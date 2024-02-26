@@ -7,7 +7,6 @@ import { getAllDecls } from "./decls.ts"
 import { declDepsToGraph } from "./graph.ts"
 import { getTopDeclDeps } from "./top_decl_deps.ts"
 import { snapshotTest } from "./_snapshot.ts"
-import { topDeclDepsSerializer } from "./_format.ts"
 
 snapshotTest(
 	"getTopDeclDeps() converts graph into valid TopDeclDeps",
@@ -20,6 +19,6 @@ snapshotTest(
 
 		const topDeclDeps = getTopDeclDeps(graph)
 
-		await assertSnapshot(t, topDeclDeps, { serializer: topDeclDepsSerializer })
+		await assertSnapshot(t, topDeclDeps)
 	},
 )
