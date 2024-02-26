@@ -44,7 +44,10 @@ export const graphDescendantsRaw = <T>(
  * TOP2 <- B, a, c
  * ```
  */
-export const graphDescendants = <T>(graph: ArrowGraph<T>): Map<T, Set<T>> =>
+// deno-lint-ignore no-explicit-any
+export const graphDescendants = <T extends keyof any>(
+	graph: ArrowGraph<T>,
+): Record<T, T[]> =>
 	graphDescendantsRaw(graph).stream()
-		.map(([k, v]) => [k, v.stream().reduce(Reducer.toJSSet())] as const)
-		.reduce(Reducer.toJSMap())
+		.map(([k, v]) => [k, [...v.stream().reduce(Reducer.toJSSet())]] as [T, T[]])
+		.reduce(Reducer.toJSObject())

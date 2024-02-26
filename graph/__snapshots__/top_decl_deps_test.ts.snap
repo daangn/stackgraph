@@ -2,18 +2,18 @@ export const snapshot = {};
 
 snapshot[`getTopDeclDeps() converts graph into valid TopDeclDeps 1`] = `
 {
-  "AliasedImport (/d.tsx:8:14)": [
-    "a (/a.ts:1:14)",
+  "vscode://file/b.tsx:5:14?kind=VariableDeclaration&name=CompAAA": [
+    "vscode://file/a.ts:3:14?kind=VariableDeclaration&name=aaa",
+    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a",
   ],
-  "CompAAA (/b.tsx:5:14)": [
-    "aaa (/a.ts:3:14)",
-    "a (/a.ts:1:14)",
+  "vscode://file/d.tsx:4:14?kind=VariableDeclaration&name=InnerImport": [
+    "vscode://file/b.tsx:4:14?kind=VariableDeclaration&name=Comp",
+    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a",
+    "vscode://file/c.tsx:7:14?kind=VariableDeclaration&name=Page",
+    "vscode://file/b.tsx:8:14?kind=VariableDeclaration&name=Unrelated",
   ],
-  "InnerImport (/d.tsx:4:14)": [
-    "Comp (/b.tsx:4:14)",
-    "a (/a.ts:1:14)",
-    "Page (/c.tsx:7:14)",
-    "Unrelated (/b.tsx:8:14)",
+  "vscode://file/d.tsx:8:14?kind=VariableDeclaration&name=AliasedImport": [
+    "vscode://file/a.ts:1:14?kind=VariableDeclaration&name=a",
   ],
 }
 `;

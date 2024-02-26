@@ -15,10 +15,10 @@ Deno.test("graphDescendants() gets all valid path of directed graph", () => {
 
 	const result = graphDescendants(graph)
 
-	const expected = new Map([
-		["TOP1", new Set(["A", "a", "b"])],
-		["TOP2", new Set(["B", "a", "c"])],
-	])
+	const expected = {
+		TOP1: ["b", "A", "a"],
+		TOP2: ["a", "B", "c"],
+	}
 
 	assertEquals(result, expected)
 })
