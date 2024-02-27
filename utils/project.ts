@@ -2,7 +2,7 @@ import {
 	type CompilerOptions,
 	type ProjectOptions,
 	ts,
-} from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
+} from "../deps/ts_morph.ts"
 import { FilteredFSHost } from "../graph/fs.ts"
 
 const ignore = /http|npm:|node_modules|\.jsx?|\.d\.ts/
