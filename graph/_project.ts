@@ -1,4 +1,4 @@
-import { Reducer, Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Reducer, Stream } from "../deps/rimbu.ts"
 import { Project, SourceFile } from "../deps/ts_morph.ts"
 import { denoCompilerOptions } from "../utils/project.ts"
 

@@ -8,7 +8,7 @@ import {
 	getDeclDeps,
 	getTopDecl,
 } from "./decl_deps.ts"
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Stream } from "../deps/rimbu.ts"
 import { getAllDecls } from "./decls.ts"
 
 /**

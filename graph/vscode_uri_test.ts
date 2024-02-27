@@ -1,4 +1,4 @@
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Stream } from "../deps/rimbu.ts"
 import { assertEquals } from "../test_deps.ts"
 import { declExampleText, exampleSrc } from "./_example_project.ts"
 import { inMemoryProject, withSrc } from "./_project.ts"
