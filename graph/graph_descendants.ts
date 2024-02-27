@@ -1,6 +1,4 @@
-import type { ArrowGraph } from "https://deno.land/x/rimbu@1.2.0/graph/mod.ts"
-import { HashMap, HashSet } from "https://deno.land/x/rimbu@1.2.0/hashed/mod.ts"
-import { Reducer } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { type ArrowGraph, HashMap, HashSet, Reducer } from "../deps/rimbu.ts"
 
 export const getConnectionsTo = <T>(graph: ArrowGraph<T>, node: T) =>
 	graph.getConnectionStreamTo(node).map(([src]) => src)

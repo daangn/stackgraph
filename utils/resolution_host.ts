@@ -1,7 +1,4 @@
-import {
-	ResolutionHostFactory,
-	ts,
-} from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
+import { ResolutionHostFactory, ts } from "../deps/ts_morph.ts"
 
 export const deno: ResolutionHostFactory = (
 	moduleResolutionHost,

@@ -1,4 +1,4 @@
-import { ArrowGraphHashed } from "https://deno.land/x/rimbu@1.2.0/graph/mod.ts"
+import { ArrowGraphHashed } from "../deps/rimbu.ts"
 
 import { assertEquals } from "../test_deps.ts"
 import { graphDescendants } from "./graph_descendants.ts"

@@ -1,4 +1,4 @@
-import { Reducer, Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Reducer, Stream } from "../deps/rimbu.ts"
 import { encodeVSCodeURI, prettyPrintURI } from "./vscode_uri.ts"
 
 import type { Declaration, DeclDeps } from "./decl_deps.ts"
