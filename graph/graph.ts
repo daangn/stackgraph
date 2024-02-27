@@ -1,6 +1,4 @@
-import type { GraphElement } from "https://deno.land/x/rimbu@1.2.0/graph/custom/common/link.ts"
-import { ArrowGraphHashed } from "https://deno.land/x/rimbu@1.2.0/graph/mod.ts"
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { ArrowGraphHashed, type GraphElement, Stream } from "../deps/rimbu.ts"
 import { type Declaration, type DeclDeps, getDeclDeps } from "./decl_deps.ts"
 import { encodeVSCodeURI, type VSCodeURI } from "./vscode_uri.ts"
 

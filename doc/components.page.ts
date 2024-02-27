@@ -1,4 +1,4 @@
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Stream } from "../deps/rimbu.ts"
 import { escapeHtml } from "https://deno.land/x/escape@1.4.2/mod.ts"
 import { exampleSrc } from "../graph/_example_project.ts"
 import outdent from "https://deno.land/x/outdent@v0.8.0/mod.ts"

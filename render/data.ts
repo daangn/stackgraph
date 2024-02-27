@@ -1,10 +1,12 @@
-import type { GraphElement } from "https://deno.land/x/rimbu@1.2.0/graph/custom/common/link.ts"
 import type { GraphData } from "https://esm.sh/force-graph@1.43.4"
 import type { Opaque } from "https://raw.githubusercontent.com/sindresorhus/type-fest/main/source/opaque.d.ts"
 
-import { ArrowGraphHashed } from "https://deno.land/x/rimbu@1.2.0/graph/mod.ts"
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
-import { HashSet } from "https://deno.land/x/rimbu@1.2.0/hashed/mod.ts"
+import {
+	ArrowGraphHashed,
+	type GraphElement,
+	HashSet,
+	Stream,
+} from "../deps/rimbu.ts"
 
 import { colors, hashRGB } from "./colors.ts"
 import { type LabelOption, mkToLabel } from "./label.ts"

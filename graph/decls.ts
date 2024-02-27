@@ -1,7 +1,4 @@
-import {
-	Stream,
-	StreamSource,
-} from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Stream, StreamSource } from "../deps/rimbu.ts"
 import { SourceFile } from "../deps/ts_morph.ts"
 import { Declaration } from "./decl_deps.ts"
 

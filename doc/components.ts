@@ -3,7 +3,7 @@ import type {
 	SourceFile,
 } from "https://deno.land/x/ts_morph@21.0.1/mod.ts"
 
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Stream } from "../deps/rimbu.ts"
 import {
 	getAllDecls,
 	getGraph,
