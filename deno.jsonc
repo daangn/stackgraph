@@ -3,7 +3,8 @@
 		"doc/assets/data",
 		"render/assets",
 		"_site",
-		"__snapshots__"
+		"__snapshots__",
+		"npm"
 	],
 	"tasks": {
 		"lume": "echo \"import 'lume/cli.ts'\" | deno run --unstable -A -",
