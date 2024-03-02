@@ -1,7 +1,7 @@
 import { inMemoryProject, withSrc } from "./_project.ts"
 import { exampleSrc } from "./_example_project.ts"
 import { assertEquals, assertSnapshot } from "../test_deps.ts"
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Stream } from "../deps/rimbu.ts"
 import { getAllDecls } from "./decls.ts"
 import { asRecord, declDepsSerializer, serializeNoColor } from "./_format.ts"
 import { snapshotTest } from "./_snapshot.ts"

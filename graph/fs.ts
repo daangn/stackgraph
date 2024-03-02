@@ -1,4 +1,4 @@
-import { RealFileSystemHost } from "https://deno.land/x/ts_morph@21.0.1/common/mod.ts"
+import { RealFileSystemHost } from "../deps/ts_morph_common.ts"
 
 /**
  * Intercepts and skips file & directory lookup to speed up the process

@@ -1,4 +1,4 @@
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Stream } from "../deps/rimbu.ts"
 import {
 	type ClassDeclaration,
 	type FunctionDeclaration,

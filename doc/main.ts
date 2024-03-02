@@ -1,8 +1,6 @@
 import { relative } from "https://deno.land/std@0.216.0/path/relative.ts"
 import { dirname } from "https://deno.land/std@0.216.0/path/dirname.ts"
-import { Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
-import { HashSet } from "https://deno.land/x/rimbu@1.2.0/hashed/mod.ts"
-
+import { HashSet, Stream } from "../deps/rimbu.ts"
 import { Project } from "../deps/ts_morph.ts"
 
 import { colors, hashRGB } from "../render/colors.ts"

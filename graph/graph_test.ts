@@ -1,4 +1,4 @@
-import { Reducer, Stream } from "https://deno.land/x/rimbu@1.2.0/stream/mod.ts"
+import { Reducer, Stream } from "../deps/rimbu.ts"
 import { exampleSrc } from "./_example_project.ts"
 import { inMemoryProject, withSrc } from "./_project.ts"
 import { declDepsToGraph, Graph } from "./graph.ts"
